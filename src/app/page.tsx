@@ -14,7 +14,7 @@ export default function HomePage() {
       </div>
       <div id="button-placement" className="">
         <button>
-          <a href="/auth/login">
+          <a href="/login">
             <div className="bg-violet-700 hover:bg-violet-900 text-white font-bold py-2 px-4 rounded hover:shadow-lg transition duration-500 ease-in-out">
               Login
             </div>
