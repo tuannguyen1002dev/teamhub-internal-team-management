@@ -1,18 +1,20 @@
-// app/dashboard/page.tsx
-import React from 'react'
+'use client'
 
-export default function Sidebar() {
+import React, { useState } from 'react'
+
+// ** import icons
+import { ChevronDown, LayoutDashboard } from 'lucide-react'
+
+export default function Sidebar(props: { sideBarState: boolean }) {
+  const { sideBarState } = props
+
   return (
-    <aside className=" bg-gray-950 p-3 flex flex-col gap-3 rounded-2xl">
-      <div className=" flex justify-center items-cente p-2">
-        <div className="text-2xl font-bold text-violet-800">TeamHub</div>
+    <div className="flex-1 p-6">
+      <div className="flex flex-col gap-3">
+        <button className="flex flex-row justify-start items-center">
+          <LayoutDashboard /> <span className={`font-semibold flex-shrink-0 transition-all duration-500 ease-in-out ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-30 opacity-100 delay-150'}`}>Dashboard</span>
+        </button>
       </div>
-      <nav>
-        <ul className="space-y-2 px-4">
-          <li><a href="#" className="block py-2 px-3 rounded hover:bg-gray-200">Dashboard</a></li>
-          <li><a href="#" className="block py-2 px-3 rounded hover:bg-gray-200">Reports</a></li>
-        </ul>
-      </nav>
-    </aside>
+    </div>
   )
 }

@@ -1,40 +1,43 @@
-// app/dashboard/layout.tsx
-import React from 'react'
+'use client'
+
+import React, { useState, useEffect } from 'react'
 import Sidebar from '@/components/sidebar'
 import Navbar from '@/components/navbar'
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+// ** import icons
+import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react'
+
+export default function DashboardLayout({ children, }: { children: React.ReactNode }) {
+
+  const [sideBarState, setSideBarState] = useState<boolean>(false)
+
+  function switchSideBarSate() {
+    return setSideBarState(!sideBarState)
+  }
+
   return (
-    // <div className="flex h-screen w-screen bg-gradient-to-b from-black via-[#2c0a72] to-purple-600 text-white overflow-hidden">
-    //   <aside className="hidden md:block md:w-64 bg-[#1e1e2f] p-5 shadow-lg">
-    //     <Sidebar />
-    //   </aside>
-
-    //   <div className="flex flex-col flex-1">
-    //     <div className="md:hidden p-4 bg-[#1e1e2f]">
-    //       <button className="text-sm px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded">Open Menu</button>
-    //     </div>
-
-    //     <header className="p-4 bg-[#1a1a2b] shadow-md">
-    //       <Navbar />
-    //     </header>
-
-    //     <main className="flex-1 overflow-y-auto bg-white bg-opacity-5 backdrop-blur-md p-6 rounded-t-2xl md:rounded-none">
-    //       {children}
-    //     </main>
-    //   </div>
-    // </div>
-    <div className="h-screen w-screen bg-white p-6 grid grid-cols-12 gap-6">
-      <div className="w-100 col-span-3 bg-amber-500">
-        {/* <Sidebar /> */}
+    <div className="h-screen w-screen flex flex-row gap-6 p-6 bg-black/40">
+      <div className="flex-1 rounded-3xl bg-violet-500 transition-all duration-500 ease-in-out h-[100%]">
+        <div className="relative flex flex-row gap-3 justify-center items-center">
+          <div className={` flex-shrink-0 transition-all duration-500 ease-in-out ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-40 opacity-100 delay-150'}`}>
+            <div className="text-2xl font-bold text-white text-center p-3">TeamHub</div>
+          </div>
+          <div className={`flex-1 flex justify-center item-center p-3 transform ${sideBarState ? 'translate-x-[-10%] translate-y-[0%]' : 'translate-x-[-10%] translate-y-[0%]'}`}>
+            <button className="flex justify-center items-center shadow-2xs rounded-4xl p-1" onClick={() => switchSideBarSate()}>
+              <ChevronLeft />
+            </button>
+          </div>
+        </div>
+        <Sidebar sideBarState={sideBarState} />
       </div>
-      <div className="w-100 col-span-full bg-violet-500">
-        {/* <Navbar /> */}
+      <div className={`bg-black/90 rounded-3xl transition-all duration-500 ease-in-out ${sideBarState ? 'flex-20' : 'flex-5'}`}>
+        <div className="w-[100%] h-[100%]">
+          <Navbar />
+          <div>
+            {children}
+          </div>
+        </div>
       </div>
-    </div>
+    </div >
   )
 }

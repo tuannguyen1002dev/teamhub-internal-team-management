@@ -3,9 +3,11 @@ import React from 'react'
 
 export default function Navbar() {
   return (
-    <header className="bg-white shadow px-6 py-4 flex justify-between items-center">
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
-      <div>User</div>
-    </header>
+    <div className="h-[100%] w-[100%] rounded-4xl p-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-stone-800">Dashboard</h1>
+        <div className="font-bold text-stone-800">User</div>
+      </div>
+    </div>
   )
 }
