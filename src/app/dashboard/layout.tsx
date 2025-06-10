@@ -17,7 +17,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
 
   return (
     <div className="h-screen w-screen flex flex-row gap-6 p-6 bg-black/40">
-      <div className="flex-1 rounded-3xl bg-violet-500 transition-all duration-500 ease-in-out h-[100%]">
+      <div className="flex-1 rounded-3xl transition-all duration-500 ease-in-out h-[100%]">
         <div className="relative flex flex-row gap-3 justify-center items-center">
           <div className={` flex-shrink-0 transition-all duration-500 ease-in-out ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-40 opacity-100 delay-150'}`}>
             <div className="text-2xl font-bold text-white text-center p-3">TeamHub</div>

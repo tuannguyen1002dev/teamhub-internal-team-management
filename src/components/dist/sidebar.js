@@ -28,9 +28,7 @@ function NavbarItem(props) {
                     react_1["default"].createElement("span", { className: "h-[1px] w-[20px] bg-gray-300" }),
                     react_1["default"].createElement("div", { className: "text-white text-xs font-semibold" }, items.sectionTitle),
                     react_1["default"].createElement("span", { className: "h-[1px] w-[20px] bg-gray-300" })) :
-                react_1["default"].createElement("div", null, 'children' in items
-                    ? react_1["default"].createElement("div", null)
-                    : react_1["default"].createElement("div", null)))));
+                react_1["default"].createElement("div", null, item.children && item.children.length > 0 && (react_1["default"].createElement("div", null, item.children.map(function (child, index) { return (react_1["default"].createElement(TreeItem, { key: index, item: child })); })))))));
     })));
 }
 exports.NavbarItem = NavbarItem;

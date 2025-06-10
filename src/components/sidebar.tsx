@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 
 // ** import icons
-import { ChevronDown, LayoutDashboard, Mail } from 'lucide-react'
+import { ChevronDown, ChevronRight, ChevronUp, LayoutDashboard, Mail } from 'lucide-react'
 
 // !! Nav types
 
@@ -43,40 +43,63 @@ const navigation: VerticalNavItemsType = [
   { title: 'Email', icon: Mail, path: '/apps/email' },
 ]
 
+function isNavSectionTitle(item: any): item is NavSectionTitle {
+  return (item as NavSectionTitle).sectionTitle !== undefined
+}
 
+function isNavGroup(item: any): item is NavGroup {
+  return (item as NavGroup).children !== undefined
+}
 
 export function NavbarItem(props: { sideBarState: boolean }) {
   const { sideBarState } = props
+  const [expandedGroups, setExpandedGroups] = useState<Record<number, boolean>>({})
 
-  console.log('tuan', navigation)
+  const toggleGroup = (index: number) => {
+    setExpandedGroups(prev => ({ ...prev, [index]: !prev[index] }))
+  }
 
   return (
-    <div className="flex-1 bg-amber-800">
-      {/* <button className="flex flex-row justify-start items-center">
-        <LayoutDashboard /> <span className={`font-semibold flex-shrink-0 transition-all duration-500 ease-in-out ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-30 opacity-100 delay-150'}`}>Dashboard</span>
-      </button> */}
+    <div className="flex-1 flex flex-col gap-3">
       {navigation.map((items, index: number) => {
-        return (
-          <div className="">
-            <div className="">
-              {'sectionTitle' in items ?
-                <div className="flex flex-row justify-center items-center gap-1">
-                  <span className="h-[1px] w-[20px] bg-gray-300"></span>
-                  <div className="text-white text-xs font-semibold">
-                    {items.sectionTitle}
-                  </div>
-                  <span className="h-[1px] w-[20px] bg-gray-300"></span>
-                </div> :
-                <div>
-                  {'children' in items
-                    ? <div>
-
-                    </div>
-                    : <div>
-                      
-                    </div>}
-                </div>}
+        if (isNavSectionTitle(items)) {
+          return (
+            <div key={index} className="flex flex-row justify-center items-center gap-1 mt-3">
+              <span className="w-[20px] h-[1px] bg-white" />
+              <span className="font-semibold text-md">{items.sectionTitle}</span>
+              <span className="w-[20px] h-[1px] bg-white" />
             </div>
+          )
+        }
+        if (isNavGroup(items)) {
+          const isExpanded = expandedGroups[index] || false
+          return (
+            <div key={index}>
+              <div className="flex flex-row justify-start items-center gap-1 cursor-pointer" onClick={() => toggleGroup(index)}>
+                {items.icon && <items.icon />}
+                <span className={`font-bold text-lg flex-shrink-0 transition-all duration-500 ease-in-out ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-30 opacity-100 delay-150'}`}  >
+                  {items.title}
+                </span>
+                <span className="ml-auto text-white transition-transform duration-300 ease-in-out">
+                  {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </span>
+              </div>
+              {isExpanded &&
+                items.children &&
+                items.children.map((child, childIndex) => (
+                  <div key={childIndex} className="pl-6 text-sm text-white">
+                    {child.title}
+                  </div>
+                ))}
+            </div>
+          )
+        }
+        return (
+          <div key={index} className="flex items-center gap-1">
+            {items.icon && <items.icon />}
+            <span className={`font-bold text-lg flex-shrink-0 transition-all duration-500 ease-in-out ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-30 opacity-100 delay-150'}`} >
+              {items.title}
+            </span>
           </div>
         )
       })}
