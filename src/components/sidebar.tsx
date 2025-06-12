@@ -1,33 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
-
+import { useRouter } from 'next/navigation'
 // ** import icons
 import { ChevronDown, ChevronRight, ChevronUp, LayoutDashboard, Mail } from 'lucide-react'
 
 // !! Nav types
-
-export type NavLink = {
-  icon?: any
-  path?: string
-  title: string
-  disabled?: boolean
-  externalLink?: boolean
-  openInNewTab?: boolean
-}
-
-export type NavGroup = {
-  icon?: any
-  title: string
-  children?: (NavGroup | NavLink)[]
-}
-
-export type NavSectionTitle = {
-  subject?: string
-  sectionTitle: string
-}
-
-export type VerticalNavItemsType = (NavLink | NavGroup | NavSectionTitle)[]
+import { NavGroup, NavLink, NavSectionTitle, VerticalNavItemsType } from '@/types/structure/NavBar'
 
 const navigation: VerticalNavItemsType = [
   {
@@ -39,7 +18,8 @@ const navigation: VerticalNavItemsType = [
       { title: 'eCommerce', path: '/dashboards/ecommerce' }
     ]
   },
-  { sectionTitle: 'Apps & Pages' },
+  { sectionTitle: 'Users section' },
+  { title: 'User', icon: Mail, path: '/user' },
   { title: 'Email', icon: Mail, path: '/apps/email' },
 ]
 
@@ -54,53 +34,60 @@ function isNavGroup(item: any): item is NavGroup {
 export function NavbarItem(props: { sideBarState: boolean }) {
   const { sideBarState } = props
   const [expandedGroups, setExpandedGroups] = useState<Record<number, boolean>>({})
+  const router = useRouter()
 
   const toggleGroup = (index: number) => {
     setExpandedGroups(prev => ({ ...prev, [index]: !prev[index] }))
   }
 
   return (
-    <div className="flex-1 flex flex-col gap-3">
+    <div className="flex-1 flex flex-col gap-3 select-none">
       {navigation.map((items, index: number) => {
         if (isNavSectionTitle(items)) {
           return (
-            <div key={index} className="flex flex-row justify-center items-center gap-1 mt-3">
-              <span className="w-[20px] h-[1px] bg-white" />
-              <span className="font-semibold text-md">{items.sectionTitle}</span>
-              <span className="w-[20px] h-[1px] bg-white" />
-            </div>
-          )
+            <div key={index}>
+              {!sideBarState ? (
+                <div className="flex flex-row justify-center items-center gap-1 mt-3">
+                  <span className="w-[20px] h-[1px] bg-white" />
+                  <span className="font-semibold text-md">{items.sectionTitle}</span>
+                  <span className="w-[20px] h-[1px] bg-white" />
+                </div>
+              ) : <div key={index} className="h-[1px] bg-white w-full my-3" />}
+            </div>)
         }
         if (isNavGroup(items)) {
-          const isExpanded = expandedGroups[index] || false
+          const isExpanded = sideBarState ? false : (expandedGroups[index] || false)
           return (
             <div key={index}>
-              <div className="flex flex-row justify-start items-center gap-1 cursor-pointer" onClick={() => toggleGroup(index)}>
+              <button className="flex flex-row justify-start items-center gap-1 cursor-pointer" onClick={() => !sideBarState && toggleGroup(index)}>
                 {items.icon && <items.icon />}
-                <span className={`font-bold text-lg flex-shrink-0 transition-all duration-500 ease-in-out ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-30 opacity-100 delay-150'}`}  >
+                <span className={`font-bold text-lg flex-shrink-0 transition-all duration-500 ease-in-out ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-30 opacity-100 overflow-hidden'}`}  >
                   {items.title}
                 </span>
-                <span className="ml-auto text-white transition-transform duration-300 ease-in-out">
-                  {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                </span>
-              </div>
-              {isExpanded &&
-                items.children &&
-                items.children.map((child, childIndex) => (
-                  <div key={childIndex} className="pl-6 text-sm text-white">
-                    {child.title}
-                  </div>
-                ))}
+                {!sideBarState && (
+                  <span className="ml-auto text-white transition-transform duration-300 ease-in-out">
+                    {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  </span>
+                )}
+              </button>
+              {items.children && (
+                <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isExpanded ? 'w-auto max-h-screen opacity-100' : 'w-0 max-h-0 opacity-0'}`} style={{ maxHeight: isExpanded ? `${items.children.length * 2.5}rem` : '0' }}  >
+                  {items.children.map((child, childIndex) => (
+                    <div key={childIndex} className="pl-9 text-sm text-white"  >
+                      {child.title}
+                    </div>
+                  ))}                </div>
+              )}
             </div>
           )
         }
         return (
-          <div key={index} className="flex items-center gap-1">
+          <button key={index} onClick={() => { if (items.path) router.push(items.path) }} className="flex items-center gap-1 cursor-pointer">
             {items.icon && <items.icon />}
-            <span className={`font-bold text-lg flex-shrink-0 transition-all duration-500 ease-in-out ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-30 opacity-100 delay-150'}`} >
+            <span className={`font-bold text-lg flex-shrink-0 transition-all duration-500 ease-in-out ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-30 opacity-100 overflow-hidden'}`} >
               {items.title}
             </span>
-          </div>
+          </button>
         )
       })}
     </div>
