@@ -1,6 +1,20 @@
-// app/page.tsx
+'use client'
+
+
+import React, { useEffect, useState } from 'react';
 
 export default function HomePage() {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/users').then((res) => {
+      console.log(res)
+    }).catch((err) => {
+      console.error('Error fetching data:', err);
+    });
+  }, []);
+
+
   return (
     <main className="items-center justify-center h-screen bg-black-50 flex flex-col space-y-10 ">
       <div id="greeting-placement" className="text-center">

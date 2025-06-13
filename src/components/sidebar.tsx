@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 // ** import icons
-import { ChevronDown, ChevronRight, ChevronUp, LayoutDashboard, Mail } from 'lucide-react'
+import { ChevronDown, ChevronRight, ChevronUp, LayoutDashboard, Mail, User } from 'lucide-react'
 
 // !! Nav types
 import { NavGroup, NavLink, NavSectionTitle, VerticalNavItemsType } from '@/types/structure/NavBar'
@@ -19,7 +19,7 @@ const navigation: VerticalNavItemsType = [
     ]
   },
   { sectionTitle: 'Users section' },
-  { title: 'User', icon: Mail, path: '/user' },
+  { title: 'User', icon: User, path: '/user' },
   { title: 'Email', icon: Mail, path: '/apps/email' },
 ]
 
@@ -76,13 +76,14 @@ export function NavbarItem(props: { sideBarState: boolean }) {
                     <div key={childIndex} className="pl-9 text-sm text-white"  >
                       {child.title}
                     </div>
-                  ))}                </div>
+                  ))}
+                </div>
               )}
             </div>
           )
         }
         return (
-          <button key={index} onClick={() => { if (items.path) router.push(items.path) }} className="flex items-center gap-1 cursor-pointer">
+          <button key={index} onClick={() => { if (items.path) router.push(items.path) }} className="flex flex-row cursor-pointer">
             {items.icon && <items.icon />}
             <span className={`font-bold text-lg flex-shrink-0 transition-all duration-500 ease-in-out ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-30 opacity-100 overflow-hidden'}`} >
               {items.title}
