@@ -1,18 +1,27 @@
 'use client'
 
-
 import React, { useEffect, useState } from 'react';
+import API from '@/shared/api';
 
 export default function HomePage() {
   const [data, setData] = useState(null);
 
-  useEffect(() => {
-    fetch('http://localhost:5000/api/users').then((res) => {
-      console.log(res)
-    }).catch((err) => {
-      console.error('Error fetching data:', err);
-    });
-  }, []);
+  // async function callAPI() {
+  //   await API.post('/users', {
+  //     name: 'tuan nguyen',
+  //     email: 'tuan@gmail.com'
+  //   })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //     }).catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
+
+  // useEffect(() => {
+  //   callAPI();
+
+  // }, []);
 
 
   return (
@@ -20,7 +29,7 @@ export default function HomePage() {
       <div id="greeting-placement" className="text-center">
         <h1 className="text-4xl font-bold mb-4">Welcome to
           <span className="opacity-0 ease-in-out animate-pulse transition-opacity duration-300 m-0 p-0"> |</span>
-          <span className="text-violet-700">TeamHub</span>
+          <span className="text-violet-700 italic">TeamHub</span>
         </h1>
         <p className="text-white/80 text-xl font-bold italic">
           Your internal team management dashboard.

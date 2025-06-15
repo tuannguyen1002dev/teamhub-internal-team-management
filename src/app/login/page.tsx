@@ -1,10 +1,33 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import API from '@/shared/api';
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isReqestAccount, setIsRequestAccount] = useState(false);
+
+  function switchMode() {
+    setIsRequestAccount(!isReqestAccount);
+  }
+
+  // async function callAPI() {
+  //   await API.post('/users', {
+  //     name: 'tuan nguyen',
+  //     email: 'tuan@gmail.com'
+  //   })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //     }).catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
+
+  // useEffect(() => {
+  //   callAPI();
+
+  // }, []);
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-blend-soft-light">
@@ -38,28 +61,55 @@ export default function LoginForm() {
           <h2 className="text-3xl font-bold text-white text-center mb-8 tracking-wide">
             Welcome to TeamHub
           </h2>
-          <form className="space-y-6">
-            <div>
-              <label htmlFor="username" className="block text-sm text-white font-medium mb-1">
-                Username
-              </label>
-              <input type="text" id="username" placeholder="Enter your username" className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white/50 border border-white/30 focus:outline-none focus:ring-2 focus:ring-violet-400" />
-            </div>
-            <div className="relative">
-              <label htmlFor="password" className="block text-sm text-white font-medium mb-1">
-                Password
-              </label>
-              <input type={showPassword ? "text" : "password"} id="password" placeholder="Enter your password" className="w-full px-4 py-2 pr-12 rounded-lg bg-white/20 text-white placeholder-white/50 border border-white/30 focus:outline-none focus:ring-2 focus:ring-violet-400" />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-9 text-white/70 hover:text-white" aria-label="Toggle password visibility">
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+
+          <div className="flex flex-col items-center justify-center mb-6">
+            {/* Login */}
+            <form className="space-y-6">
+              <div>
+                <label htmlFor="username" className="block text-sm text-white font-medium mb-1">
+                  Username
+                </label>
+                <input type="text" id="username" placeholder="Enter your username" className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white/50 border border-white/30 focus:outline-none focus:ring-2 focus:ring-violet-400" />
+              </div>
+              <div className="relative">
+                <label htmlFor="password" className="block text-sm text-white font-medium mb-1">
+                  Password
+                </label>
+                <input type={showPassword ? "text" : "password"} id="password" placeholder="Enter your password" className="w-full px-4 py-2 pr-12 rounded-lg bg-white/20 text-white placeholder-white/50 border border-white/30 focus:outline-none focus:ring-2 focus:ring-violet-400" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-9 text-white/70 hover:text-white" aria-label="Toggle password visibility">
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+              <button type="submit" className="w-full py-2 rounded-lg shadow-sm bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold tracking-wide hover:shadow-lg transition duration-500 ease-in-out bg-blend-soft-light">
+                Sign In
               </button>
-            </div>
-            <button type="submit" className="w-full py-2 rounded-lg shadow-sm bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold tracking-wide hover:shadow-lg transition duration-500 ease-in-out bg-blend-soft-light">
-              Sign In
-            </button>
-          </form>
+            </form>
+
+            {/* Request Account */}
+            <form className="space-y-6">
+              <div>
+                <label htmlFor="username" className="block text-sm text-white font-medium mb-1">
+                  Username
+                </label>
+                <input type="text" id="username" placeholder="Enter your username" className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white/50 border border-white/30 focus:outline-none focus:ring-2 focus:ring-violet-400" />
+              </div>
+              <div className="relative">
+                <label htmlFor="password" className="block text-sm text-white font-medium mb-1">
+                  Password
+                </label>
+                <input type={showPassword ? "text" : "password"} id="password" placeholder="Enter your password" className="w-full px-4 py-2 pr-12 rounded-lg bg-white/20 text-white placeholder-white/50 border border-white/30 focus:outline-none focus:ring-2 focus:ring-violet-400" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-9 text-white/70 hover:text-white" aria-label="Toggle password visibility">
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+              <button type="submit" className="w-full py-2 rounded-lg shadow-sm bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold tracking-wide hover:shadow-lg transition duration-500 ease-in-out bg-blend-soft-light">
+                Sign In
+              </button>
+            </form>
+          </div>
+
           <p className="text-sm text-white/70 text-center mt-6">
-            Don’t have an account? <a href="#" className="text-white underline hover:text-violet-300">Request account</a>
+            Don’t have an account? <a href="#" className="text-white underline hover:text-violet-300" onDoubleClick={() => switchMode()}>Request account</a>
           </p>
         </div>
       </div>
