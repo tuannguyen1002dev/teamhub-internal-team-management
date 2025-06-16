@@ -29,6 +29,18 @@ export default function LoginForm() {
 
   // }, []);
 
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget as HTMLFormElement);
+    const data = Object.fromEntries(formData.entries());
+
+    await API.post('/users', data).then((res) => {
+      console.log(res.data);
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
   return (
     <div className="relative h-screen w-full overflow-hidden bg-blend-soft-light">
       {/* Animated Wavy Color Background */}
@@ -62,20 +74,24 @@ export default function LoginForm() {
             Welcome to <br /> TeamHub
           </h2>
 
-          <form className="flex flex-col gap-8" onSubmit={(e) => { e.preventDefault(); }}>
-            <div>
-              <label htmlFor="username" className="block text-sm text-white font-medium mb-1">
-                Username
+          <form className="flex flex-col gap-8" onSubmit={(e) => { handleSubmit(e) }}>
+            <div className="relative group">
+              <label htmlFor="email" className="block text-sm text-white font-medium mb-1">
+                Email
               </label>
-              <input type="text" id="username" placeholder="Enter your username" className="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white/50 border border-white/30 focus:outline-none focus:ring-2 focus:ring-violet-400" />
+              <input type="email" id="email" name="email" placeholder="Enter your email" className="w-full px-4 py-3 rounded-xl outline-none transition-all duration-500 bg-black/10 ring-0 ring-white/10 focus:bg-black/30 focus:ring-2 focus:ring-white/30" />
             </div>
 
             <div className="relative">
-              <label htmlFor="password" className="block text-sm text-white font-medium mb-1">
+              <label htmlFor="password" className={`block text-sm text-white font-semibold mb-1 transition-all duration-500 ease-in-out ${isReqestAccount ? 'opacity-0' : 'opacity-100'}`}>
                 Password
               </label>
-              <input type={showPassword ? "text" : "password"} id="password" placeholder="Enter your password" className="w-full px-4 py-2 pr-12 rounded-lg bg-white/20 text-white placeholder-white/50 border border-white/30 focus:outline-none focus:ring-2 focus:ring-violet-400" />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-9 text-white/70 hover:text-white" aria-label="Toggle password visibility">
+              <label className={`absolute top-0 left-0 block text-sm text-white font-semibold mb-1 transition-all duration-500 ease-in-out   ${!isReqestAccount ? 'opacity-0 ' : 'opacity-100'}`}>
+                Verification code
+              </label>
+              <input type={showPassword ? "text" : "password"} id={isReqestAccount ? "verificationCode" : "password"} name={isReqestAccount ? "verificationCode" : "password"} placeholder={isReqestAccount ? "Enter your verification code" : "Enter your password"}
+                className={`w-full px-4 py-3 pr-12 rounded-xl focus:outline-none transform transition-all duration-500 ${isReqestAccount ? 'scale-105 shadow-sm z-10 bg-black/30 ring-2 ring-pink-500 delay-150' : 'scale-100 shadow-none z-0 bg-black/10 ring-0 ring-white/10 focus:bg-black/30 focus:ring-2 focus:ring-white/30'}`} />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className={`absolute right-[5%] top-[50%] text-white/70 hover:text-white transition-all duration-500 ${isReqestAccount ? 'opacity-0' : 'opacity-100'} `} aria-label=" Toggle password visibility">
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
@@ -87,10 +103,10 @@ export default function LoginForm() {
 
           <div className="flex flex-row gap-1 text-sm text-white/70 justify-center items-center">
             <span> Don’t have an account?</span>
-            <button className="text-white underline hover:text-violet-300 font-semibold" onDoubleClick={switchMode}>Request account</button>
+            <button className="text-white underline hover:text-violet-300 font-semibold" onClick={switchMode}>Request account</button>
           </div>
         </div>
-      </div>
+      </div >
     </div >
   );
 }
