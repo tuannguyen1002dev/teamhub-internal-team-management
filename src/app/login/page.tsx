@@ -12,33 +12,19 @@ export default function LoginForm() {
     setIsRequestAccount(!isReqestAccount);
   }
 
-  // async function callAPI() {
-  //   await API.post('/users', {
-  //     name: 'tuan nguyen',
-  //     email: 'tuan@gmail.com'
-  //   })
-  //     .then((res) => {
-  //       console.log(res.data);
-  //     }).catch((err) => {
-  //       console.log(err);
-  //     });
-  // }
-
-  // useEffect(() => {
-  //   callAPI();
-
-  // }, []);
-
+  // ! Effect to handle the initial state of the form
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget as HTMLFormElement);
     const data = Object.fromEntries(formData.entries());
 
-    await API.post('/users', data).then((res) => {
-      console.log(res.data);
-    }).catch((err) => {
-      console.log(err);
-    });
+    await API.post('/user', data) // Updated endpoint
+      .then((res: { data: any; }) => {
+        console.log(res.data);
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
   }
 
   return (
