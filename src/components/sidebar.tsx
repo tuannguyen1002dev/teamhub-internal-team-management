@@ -41,7 +41,7 @@ export function NavbarItem(props: { sideBarState: boolean }) {
   }
 
   return (
-    <div className="flex-1 flex flex-col gap-3 select-none">
+    <div className={`flex-1 flex flex-col gap-3 select-none transition-all duration-500 ease-in-out ${sideBarState ? 'justify-center items-center w-0' : 'justify-center items-start w-40'}`}>
       {navigation.map((items, index: number) => {
         if (isNavSectionTitle(items)) {
           return (
@@ -52,7 +52,7 @@ export function NavbarItem(props: { sideBarState: boolean }) {
                   <span className="font-semibold text-md">{items.sectionTitle}</span>
                   <span className="w-[20px] h-[1px] bg-white" />
                 </div>
-              ) : <div key={index} className="h-[1px] bg-white w-full my-3" />}
+              ) : <div key={index} className="h-[1px] bg-white w-[30px] my-3 display-none" />}
             </div>)
         }
         if (isNavGroup(items)) {
