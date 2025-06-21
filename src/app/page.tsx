@@ -6,24 +6,6 @@ import API from '@/shared/api';
 export default function HomePage() {
   const [data, setData] = useState(null);
 
-  // async function callAPI() {
-  //   await API.post('/users', {
-  //     name: 'tuan nguyen',
-  //     email: 'tuan@gmail.com'
-  //   })
-  //     .then((res) => {
-  //       console.log(res.data);
-  //     }).catch((err) => {
-  //       console.log(err);
-  //     });
-  // }
-
-  // useEffect(() => {
-  //   callAPI();
-
-  // }, []);
-
-
   return (
     <main className="items-center justify-center h-screen bg-black-50 flex flex-col space-y-10 ">
       <div id="greeting-placement" className="text-center">
