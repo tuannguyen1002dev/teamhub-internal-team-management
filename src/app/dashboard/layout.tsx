@@ -18,8 +18,6 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
     return setSideBarState(!sideBarState)
   }
 
-  console.log(pathname);
-
   return (
     <div className="h-screen w-screen flex flex-row gap-6 p-6 bg-gray-900">
       <div className={`rounded-3xl ${animationClasses} h-[100%] ${sideBarState ? 'w-[5%]' : 'w-[12%]'}`}>
@@ -38,9 +36,9 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
       <div className={`flex bg-black/90 rounded-3xl ${animationClasses} h-[100%] ${sideBarState ? 'w-[95%]' : 'w-[88%]'}`}>
         <div className="flex flex-col w-full h-full">
           <div className="flex flex-row justify-between items-center px-6 py-3 rounded-t-3xl border-b border-white/20">
-            <text className="text-2xl font-bold text-white">
+            <span className="text-2xl font-bold text-white">
               {pathname.charAt(1).toUpperCase() + pathname.replace('/', '').slice(1)}
-            </text>
+            </span>
             <div className="border border-white/20 rounded-full p-2 text-white hover:bg-white/90 hover:text-black transition-all duration-500 ease-in-out cursor-pointer  ">
               <User />
             </div>

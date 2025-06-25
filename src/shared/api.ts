@@ -27,7 +27,7 @@ function getApi(path: string, options: any = {}) {
   });
 }
 
-function postApi(path: string, data: any, options: any = {}) {
+function postApi(path: string, data?: any, options: any = {}) {
   return axios.post(`${API_URL}/${path.replace(/^\//, "")}`, data, {
     ...defaultOptions,
     ...options,
