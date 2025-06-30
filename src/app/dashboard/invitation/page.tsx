@@ -2,12 +2,22 @@
 
 import Api from "@/shared/api";
 import React, { JSX, useEffect, useState, useRef } from "react";
+import { useForm, SubmitHandler } from "react-hook-form"
 
 import { Copy } from "lucide-react";
 
+type Inputs = {
+  email: string
+}
+
 export default function InvitationPanel() {
 
-  const inputEmailRef = useRef<HTMLInputElement | null>(null);
+
+  const {
+    email,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>()
 
   const [invCodeCheck, setInvCodeCheck] = useState<string | null>("");
   const [invitaionCodeArray, setInvitaionCodeArray] = useState<any[]>([]);
@@ -24,16 +34,6 @@ export default function InvitationPanel() {
     } catch (error) {
       console.error("Failed to read or write clipboard:", error);
     }
-  }
-
-  async function generateCode() {
-    Api.post('/invitation-token', { email: 'tuannguyencorei7@gmail.com' }).then((res: { data: any; }) => {
-      console.log(res.data);
-      // You can update the invitaionCodeArray state here to reflect the new code
-    }).catch((err: any) => {
-      console.error("Error generating code:", err);
-      // Handle error appropriately, e.g., show an alert
-    });
   }
 
   async function fetchInvitationCodes() {
@@ -68,7 +68,6 @@ export default function InvitationPanel() {
 
   async function handleGenerateCode(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
-    // console.log("Generating code...", inputEmailRef.current?.value);
     try {
       Api.post('/invitation-token', { email: inputEmailRef.current?.value }).then((res: { data: any; }) => {
         console.log(res.data);
@@ -80,6 +79,11 @@ export default function InvitationPanel() {
     } catch (error) {
       console.error("Error generating code:", error);
     }
+  }
+
+  function onSubmit(data: Inputs) {
+    console.log("Form submitted with data:", data);
+
   }
 
   return (
@@ -125,12 +129,18 @@ export default function InvitationPanel() {
             <Copy size={16} />
           </button>
         </div>
-        <div className="relative w-100">
+        {/* <div className="relative w-100">
           <input ref={inputEmailRef} type="text" placeholder="Enter new user email" className="w-full pr-20 pl-4 py-2 border border-gray-300 rounded-4xl focus:outline-none" />
           <button className="absolute right-1 top-1 bottom-1 px-4 bg-blue-500 text-white rounded-2xl hover:bg-blue-600" onClick={(e) => handleGenerateCode(e)}>
             Generate
           </button>
-        </div>
+        </div> */}
+        <form className="" onSubmit={handleSubmit(onSubmit)}>
+          <input defaultValue={email} type="text" placeholder="Enter new user email" className="w-full pr-20 pl-4 py-2 border border-gray-300 rounded-4xl focus:outline-none" />
+          <button className="absolute right-1 top-1 bottom-1 px-4 bg-blue-500 text-white rounded-2xl hover:bg-blue-600">
+            Generate
+          </button>
+        </form>
       </div>
     </div>
   );
