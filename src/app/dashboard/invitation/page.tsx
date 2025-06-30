@@ -2,7 +2,9 @@
 
 import Api from "@/shared/api";
 import React, { JSX, useEffect, useState, useRef } from "react";
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm, SubmitHandler, Controller } from "react-hook-form"
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup'
 
 import { Copy } from "lucide-react";
 
@@ -12,12 +14,23 @@ type Inputs = {
 
 export default function InvitationPanel() {
 
+  const invitationTokenRef = useRef<HTMLInputElement>(null);
+
+  const schema = yup.object().shape({
+    email: yup.string().required('please enter your email').email('please enter a valid email address').matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i, 'please enter a valid email address')
+  })
 
   const {
-    email,
+    control,
+    setError,
     handleSubmit,
-    formState: { errors },
-  } = useForm<Inputs>()
+    formState: { errors }
+  } = useForm({
+    defaultValues: { email: "" },
+    mode: 'onBlur',
+    resolver: yupResolver(schema)
+  })
+
 
   const [invCodeCheck, setInvCodeCheck] = useState<string | null>("");
   const [invitaionCodeArray, setInvitaionCodeArray] = useState<any[]>([]);
@@ -66,24 +79,23 @@ export default function InvitationPanel() {
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   }
 
-  async function handleGenerateCode(event: React.MouseEvent<HTMLButtonElement>) {
-    event.preventDefault();
-    try {
-      Api.post('/invitation-token', { email: inputEmailRef.current?.value }).then((res: { data: any; }) => {
-        console.log(res.data);
-        setRecentGeneratedToken(res.data.token);
-        fetchInvitationCodes();
-      }).catch((err: any) => {
-        console.error("Error generating code:", err);
-      });
-    } catch (error) {
-      console.error("Error generating code:", error);
-    }
-  }
-
   function onSubmit(data: Inputs) {
     console.log("Form submitted with data:", data);
 
+    Api.post('/invitation-token', { email: data.email }).then((res: { data: any; }) => {
+      console.log("Generated token:", res.data.token);
+      res.data.token && navigator.clipboard.writeText(res.data.token);
+      setRecentGeneratedToken(res.data.token);
+      fetchInvitationCodes();
+    })
+      .catch((err: any) => {
+        console.error("Error generating code:", err);
+        if (err.response && err.response.data && err.response.data.message) {
+          setError("email", { type: "manual", message: err.response.data.message });
+        } else {
+          setError("email", { type: "manual", message: "An unexpected error occurred." });
+        }
+      });
   }
 
   return (
@@ -124,24 +136,33 @@ export default function InvitationPanel() {
       </div>
       <div className="flex flex-row gap-3 mt-4 w-full justify-end items-center">
         <div className={`relative w-100 transition-all duration-500 ease-in-out ${recentGeneratedToken ? 'opacity-100' : 'opacity-0'}`}>
-          <input type="text" placeholder="access token" className="w-full pr-20 pl-4 py-2 border-gray-300 rounded-4xl border-0 outline-none focus:outline-none" disabled />
-          <button className="absolute right-1 top-1 bottom-1 px-4 bg-blue-500 text-white rounded-2xl hover:bg-blue-600">
+          <input ref={invitationTokenRef} value={recentGeneratedToken ?? ''} type="text" placeholder="access token" className="w-full pr-20 pl-4 py-2 border-gray-300 rounded-4xl border-0 outline-none focus:outline-none" />
+          <button className="absolute right-1 top-1 bottom-1 px-4 bg-blue-500 text-white rounded-2xl hover:bg-blue-600" onClick={() => CopyInvCodeToClipboard(invitationTokenRef.current?.value)}>
             <Copy size={16} />
           </button>
         </div>
-        {/* <div className="relative w-100">
-          <input ref={inputEmailRef} type="text" placeholder="Enter new user email" className="w-full pr-20 pl-4 py-2 border border-gray-300 rounded-4xl focus:outline-none" />
-          <button className="absolute right-1 top-1 bottom-1 px-4 bg-blue-500 text-white rounded-2xl hover:bg-blue-600" onClick={(e) => handleGenerateCode(e)}>
-            Generate
-          </button>
-        </div> */}
-        <form className="" onSubmit={handleSubmit(onSubmit)}>
-          <input defaultValue={email} type="text" placeholder="Enter new user email" className="w-full pr-20 pl-4 py-2 border border-gray-300 rounded-4xl focus:outline-none" />
-          <button className="absolute right-1 top-1 bottom-1 px-4 bg-blue-500 text-white rounded-2xl hover:bg-blue-600">
-            Generate
-          </button>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Controller
+            name="email"
+            control={control}
+            rules={{ required: true }}
+            render={({ field: { value, onChange, onBlur } }: any) => (
+              <div className="relative w-100">
+                <input
+                  type="email"
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  placeholder="Enter new user email"
+                  className={`w-full pr-20 pl-4 py-2 border border-gray-300 rounded-4xl focus:outline-none ${errors.email && value ? `border-none ring-2 ring-red-800` : `border-1 ring-0 ring-red-800`}`} />
+                <span className={`absolute top-12 left-1 text-red text-xs text-red-800 transition-all duration-500 ease-in-out ${errors.email && value ? 'opacity-100' : 'opacity-0'}`}>{errors.email && value ? errors.email.message : 'please enter a valid email address'}</span>
+                <button className="absolute right-1 top-1 bottom-1 px-4 bg-blue-500 text-white rounded-2xl hover:bg-blue-600" type="submit" >
+                  Generate
+                </button>
+              </div>
+            )} />
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
