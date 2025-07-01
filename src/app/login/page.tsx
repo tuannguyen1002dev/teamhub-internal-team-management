@@ -59,7 +59,6 @@ export default function LoginForm() {
           <h2 className="text-3xl font-bold text-white text-center tracking-wide">
             Welcome to <br /> TeamHub
           </h2>
-
           <form className="flex flex-col gap-8" onSubmit={(e) => { handleSubmit(e) }}>
             <div className="relative group">
               <label htmlFor="email" className="block text-sm text-white font-medium mb-1">
@@ -81,12 +80,10 @@ export default function LoginForm() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-
             <button type="submit" className="w-full py-2 rounded-lg shadow-sm bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold tracking-wide hover:shadow-lg transition duration-500 ease-in-out bg-blend-soft-light">
               Sign In
             </button>
           </form>
-
           <div className="flex flex-row gap-1 text-sm text-white/70 justify-center items-center">
             <span> Don’t have an account?</span>
             <button className="text-white underline hover:text-violet-300 font-semibold" onClick={switchMode}>Request account</button>
