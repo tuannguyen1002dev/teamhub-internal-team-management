@@ -7,16 +7,20 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup'
 
 import { Copy } from "lucide-react";
+import toast, { Toaster } from 'react-hot-toast';
 
 type Inputs = {
   email: string
 }
 
+const notifyBadge = (message: string) => toast.error(message, {
+  duration: 5000,
+  position:'bottom-center'
+});
+
 export default function InvitationPanel() {
 
   const invitationTokenRef = useRef<HTMLInputElement>(null);
-
-
   const schema = yup.object().shape({
     email: yup.string().required('please enter your email').email('please enter a valid email address').matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i, 'please enter a valid email address')
   })
@@ -55,10 +59,12 @@ export default function InvitationPanel() {
       const response = await Api.get('invitation-token/unused') // Adjust the endpoint as needed
       if (!response.data || !Array.isArray(response.data)) {
         console.error("Invalid response format:", response.data);
+        setInvitaionCodeArray([]);
         return;
       }
       // Ensure the data is an array before setting it
       if (!Array.isArray(response.data)) {
+
         console.error("Expected an array but received:", response.data);
         return;
       }
@@ -90,34 +96,34 @@ export default function InvitationPanel() {
   }
 
   function onSubmit(data: Inputs) {
-    console.log(data)
-    // Api.post('/invitation-token', { email: data.email }).then((res: { data: any; }) => {
-    //   console.log("Generated token:", res.data.token);
-    //   res.data.token && navigator.clipboard.writeText(res.data.token);
-    //   setRecentGeneratedToken(res.data.token);
-    //   fetchInvitationCodes();
-    // }).catch((err: any) => {
-    //   console.error("Error generating code:", err);
-    //   if (err.response && err.response.data && err.response.data.message) {
-    //     setError("email", { type: "manual", message: err.response.data.message });
-    //   } else {
-    //     setError("email", { type: "manual", message: "An unexpected error occurred." });
-    //   }
-    // });
-  }
-
-  function withoutEmailTokenGen() {
-    Api.post('/invitation-token', { email: '' }).then((res: { data: any; }) => {
-      console.log("Generated token:", res.data.token); i
+    Api.post('/invitation-token', { email: data.email }).then((res: { data: any; }) => {
       res.data.token && navigator.clipboard.writeText(res.data.token);
       setRecentGeneratedToken(res.data.token);
       fetchInvitationCodes();
     }).catch((err: any) => {
-      console.error("Error generating code:", err);
+      setError(err.response && err.response.data && err.response.data.message ? "email" : "email", { type: "manual", message: err.response && err.response.data && err.response.data.message ? err.response.data.message : "An unexpected error occurred." });
       if (err.response && err.response.data && err.response.data.message) {
         setError("email", { type: "manual", message: err.response.data.message });
+        notifyBadge(err.response.data.message);
       } else {
         setError("email", { type: "manual", message: "An unexpected error occurred." });
+        notifyBadge("An unexpected error occurred");
+      }
+    });
+  }
+
+  function withoutEmailTokenGen() {
+    Api.post('/invitation-token', { email: 'tokenGen' }).then((res: { data: any; }) => {
+      res.data.token && navigator.clipboard.writeText(res.data.token);
+      setRecentGeneratedToken(res.data.token);
+      fetchInvitationCodes();
+    }).catch((err: any) => {
+      if (err.response && err.response.data && err.response.data.message) {
+        setError("email", { type: "manual", message: err.response.data.message });
+        notifyBadge(err.response.data.message);
+      } else {
+        setError("email", { type: "manual", message: err.response.data.message || "An unexpected error occurred." });
+        notifyBadge("An unexpected error occurred");
       }
     });
     setApiPostMode(false);
@@ -191,6 +197,7 @@ export default function InvitationPanel() {
             )} />
         </form>
       </div>
+      <Toaster />
     </div>
   );
 };
