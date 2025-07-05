@@ -9,17 +9,32 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Copy } from "lucide-react";
 import toast, { Toaster } from 'react-hot-toast';
 
+// Table import
+import {
+  keepPreviousData,
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from '@tanstack/react-query';
+
+import {
+  PaginationState,
+  useReactTable,
+  getCoreRowModel,
+  ColumnDef,
+  flexRender,
+} from '@tanstack/react-table'
+
+
 type Inputs = {
   email: string
 }
-
 const notifyBadge = (message: string) => toast.error(message, {
   duration: 5000,
-  position:'bottom-center'
+  position: 'bottom-center'
 });
 
 export default function InvitationPanel() {
-
   const invitationTokenRef = useRef<HTMLInputElement>(null);
   const schema = yup.object().shape({
     email: yup.string().required('please enter your email').email('please enter a valid email address').matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i, 'please enter a valid email address')
@@ -37,28 +52,36 @@ export default function InvitationPanel() {
   })
 
   const [apiPostMode, setApiPostMode] = useState<boolean>(false);
-  const [invCodeCheck, setInvCodeCheck] = useState<string | null>("");
   const [invitaionCodeArray, setInvitaionCodeArray] = useState<any[]>([]);
   const [recentGeneratedToken, setRecentGeneratedToken] = useState<string | null>(null);
 
-  async function CopyInvCodeToClipboard(targetValue: string) {
+  async function CopyInvCodeToClipboard(targetValue: string | null) {
     try {
       const clipboardText = await navigator.clipboard.readText();
       if (clipboardText === targetValue) {
+        toast.success("already copied", {
+          duration: 2000,
+          position: 'bottom-center',
+        });
       } else {
-        await navigator.clipboard.writeText(targetValue);
-        setInvCodeCheck(targetValue);
+        await navigator.clipboard.writeText(targetValue !== null ? targetValue : '');
+        toast.success("Invitation token copied to clipboard", {
+          duration: 2000,
+          position: 'bottom-center'
+        });
       }
     } catch (error) {
       console.error("Failed to read or write clipboard:", error);
+      toast.error("Error occured while trying to copy this token", {
+        duration: 2000,
+        position: 'bottom-center'
+      });
     }
   }
-
-  async function fetchInvitationCodes() {
+  async function fetchAvailableInvitationTokens() {
     try {
-      const response = await Api.get('invitation-token/unused') // Adjust the endpoint as needed
+      const response = await Api.get('invitation-token/unused')
       if (!response.data || !Array.isArray(response.data)) {
-        console.error("Invalid response format:", response.data);
         setInvitaionCodeArray([]);
         return;
       }
@@ -69,17 +92,13 @@ export default function InvitationPanel() {
         return;
       }
       setInvitaionCodeArray(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("Error fetching invitation codes:", error);
     }
   }
-
   useEffect(() => {
-    fetchInvitationCodes()
+    fetchAvailableInvitationTokens()
   }, []);
-
-
   // ** utils functions
   function formatDateTime(dateInput: string | Date): string {
     const date = new Date(dateInput);
@@ -94,12 +113,11 @@ export default function InvitationPanel() {
 
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   }
-
   function onSubmit(data: Inputs) {
     Api.post('/invitation-token', { email: data.email }).then((res: { data: any; }) => {
       res.data.token && navigator.clipboard.writeText(res.data.token);
       setRecentGeneratedToken(res.data.token);
-      fetchInvitationCodes();
+      fetchAvailableInvitationTokens();
     }).catch((err: any) => {
       setError(err.response && err.response.data && err.response.data.message ? "email" : "email", { type: "manual", message: err.response && err.response.data && err.response.data.message ? err.response.data.message : "An unexpected error occurred." });
       if (err.response && err.response.data && err.response.data.message) {
@@ -111,12 +129,11 @@ export default function InvitationPanel() {
       }
     });
   }
-
   function withoutEmailTokenGen() {
     Api.post('/invitation-token', { email: 'tokenGen' }).then((res: { data: any; }) => {
       res.data.token && navigator.clipboard.writeText(res.data.token);
       setRecentGeneratedToken(res.data.token);
-      fetchInvitationCodes();
+      fetchAvailableInvitationTokens();
     }).catch((err: any) => {
       if (err.response && err.response.data && err.response.data.message) {
         setError("email", { type: "manual", message: err.response.data.message });
@@ -133,7 +150,7 @@ export default function InvitationPanel() {
     <div className="flex flex-col gap-3 p-3">
       {/* <h1 className="text-2xl font-bold mb-4">Code List</h1> */}
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-gray-950 rounded-4xl border border-gray-800">
+        <table className="min-w-full bg-gray-950 border border-gray-800">
           <thead>
             <tr className="text-start bg-gray-800 text-white">
               <th className="px-4 py-2 text-start">Access token</th>
@@ -146,18 +163,18 @@ export default function InvitationPanel() {
           </thead>
           <tbody>
             {Array.isArray(invitaionCodeArray) && invitaionCodeArray.map(items => (
-              <tr key={items.id} className="hover:bg-gray-900 relative group overflow-visible h-15">
-                <td className="pl-4 py-2 flex flex-row gap-3 justify-start items-center h-15" onClick={() => CopyInvCodeToClipboard(items.token)}>
-                  <span className="truncate w-50">{items.token}</span>
-                  {invCodeCheck == items.code
-                    ? <span className="p-1 bg-green-500/20">copied</span>
-                    : <span className=" bg-red-500/20"></span>}
+              <tr key={items.id} className=" relative  overflow-visible">
+                <td className="relative pl-4 flex hover:bg-gray-900 border-t-1 border-gray-900 group" onClick={() => CopyInvCodeToClipboard(items.token)}>
+                  <span className="truncate w-60 ">{items.token}</span>
+                  <span className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gray-800 p-2 rounded-4xl">
+                    <Copy />
+                  </span>
                 </td>
-                <td className="px-4 py-2  border-l-1 border-gray-800 w-150">{items.email}</td>
-                <td className="px-4 py-2 border-l-1 border-gray-800 w-40 text-center">{items.isUsed ? 'in active' : 'available'}</td>
-                <td className="px-4 py-2 border-l-1 border-gray-800 w-40 text-center">{formatDateTime(items.createdAt)}</td>
-                <td className="px-4 py-2 border-l-1 border-gray-800 w-40 text-center">{formatDateTime(items.expiresAt)}</td>
-                <td className="px-4 py-2 border-l-1 border-gray-800 w-60">
+                <td className="px-4 py-2 border-1 border-gray-900 w-100">{items.email}</td>
+                <td className="px-4 py-2 border-1 border-gray-900 w-20 text-center">{items.isUsed ? 'in active' : 'available'}</td>
+                <td className="px-4 py-2 border-1 border-gray-900 w-30 text-center">{formatDateTime(items.createdAt)}</td>
+                <td className="px-4 py-2 border-1 border-gray-900 w-30 text-center">{formatDateTime(items.expiresAt)}</td>
+                <td className="px-4 py-2 border-1 border-gray-900 w-100">
                   <span>{items.createBy}</span>
                 </td>
               </tr>

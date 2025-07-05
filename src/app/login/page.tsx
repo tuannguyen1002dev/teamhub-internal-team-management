@@ -80,13 +80,22 @@ export default function LoginForm() {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            <button type="submit" className="w-full py-2 rounded-lg shadow-sm bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold tracking-wide hover:shadow-lg transition duration-500 ease-in-out bg-blend-soft-light">
-              Sign In
+            <button type="submit" className={`relative w-full py-2 rounded-lg shadow-sm bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold hover:shadow-lg transition duration-500 ease-in-out bg-blend-soft-light`}>
+              <span className={`absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] transition-all duration-500 ease-in-out ${isReqestAccount ? 'opacity-100 blur-0' : 'opacity-0 blur-xs'}`}>
+                Verify token
+              </span>
+              <span className={`transition-all duration-500 ease-in-out ${isReqestAccount ? 'opacity-0 blur-xs' : 'opacity-100 blur-0'}`}>
+                Sign in
+              </span>
             </button>
           </form>
-          <div className="flex flex-row gap-1 text-sm text-white/70 justify-center items-center">
-            <span> Don’t have an account?</span>
-            <button className="text-white underline hover:text-violet-300 font-semibold" onClick={switchMode}>Request account</button>
+          <div className="w-full relative mb-3">
+            <button className={`text-sm w-full absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] transition-all duration-500 ease-in-out ${isReqestAccount ? 'opacity-0 blur-xs' : 'opacity-100 blur-0'}`} onClick={switchMode}>
+              Don’t have an account? <span className="font-semibold underline"> Request account </span>
+            </button>
+            <button className={`text-sm w-full absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] transition-all duration-500 ease-in-out ${!isReqestAccount ? 'opacity-0 blur-xs' : 'opacity-100 blur-0'}`} onClick={switchMode}>
+              back to <span className="font-semibold underline"> Login</span> page
+            </button>
           </div>
         </div>
       </div >
