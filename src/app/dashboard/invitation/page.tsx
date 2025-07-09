@@ -51,7 +51,6 @@ export default function InvitationPanel() {
     resolver: yupResolver(schema)
   })
 
-  const [apiPostMode, setApiPostMode] = useState<boolean>(false);
   const [invitaionCodeArray, setInvitaionCodeArray] = useState<any[]>([]);
   const [recentGeneratedToken, setRecentGeneratedToken] = useState<string | null>(null);
 
@@ -129,22 +128,6 @@ export default function InvitationPanel() {
       }
     });
   }
-  function withoutEmailTokenGen() {
-    Api.post('/invitation-token', { email: 'tokenGen' }).then((res: { data: any; }) => {
-      res.data.token && navigator.clipboard.writeText(res.data.token);
-      setRecentGeneratedToken(res.data.token);
-      fetchAvailableInvitationTokens();
-    }).catch((err: any) => {
-      if (err.response && err.response.data && err.response.data.message) {
-        setError("email", { type: "manual", message: err.response.data.message });
-        notifyBadge(err.response.data.message);
-      } else {
-        setError("email", { type: "manual", message: err.response.data.message || "An unexpected error occurred." });
-        notifyBadge("An unexpected error occurred");
-      }
-    });
-    setApiPostMode(false);
-  }
 
   return (
     <div className="flex flex-col gap-3 p-3">
@@ -200,15 +183,12 @@ export default function InvitationPanel() {
                   type="email"
                   value={value}
                   onChange={onChange}
-                  onBlur={(e) => {
-                    onBlur(e)
-                    e.currentTarget.value ? setApiPostMode(true) : setApiPostMode(false)
-                  }}
+                  onBlur={onBlur}
                   placeholder="Enter new user email"
                   className={`w-full pr-20 pl-4 py-2 border border-gray-300 rounded-4xl focus:outline-none ${errors.email && value ? `border-none ring-2 ring-red-800` : `border-1 ring-0 ring-red-800`}`} />
-                <span className={`absolute top-12 left-1 text-red text-xs text-red-800 transition-all duration-500 ease-in-out ${errors.email && value ? 'opacity-100' : 'opacity-0'}`}>{errors.email && value ? errors.email.message : 'please enter a valid email address'}</span>
-                <button className="absolute right-1 top-1 bottom-1 px-4 bg-blue-500 text-white rounded-2xl hover:bg-blue-600" type={apiPostMode ? 'submit' : 'button'} onClick={() => { withoutEmailTokenGen() }}>
-                  {value ? 'Assign email' : 'Generate token'}
+                <span className={`absolute top-12 left-1 text-red text-xs text-red-800 transition-all duration-500 ease-in-out ${errors.email && value ? 'opacity-100' : 'opacity-0'}`}>{errors.email && value ? errors.email.message : 'some Error occured'}</span>
+                <button className="absolute right-1 top-1 bottom-1 px-4 bg-blue-500 text-white rounded-2xl hover:bg-blue-600" type="submit" disabled={value ? false : true}>
+                  Assign email
                 </button>
               </div>
             )} />
