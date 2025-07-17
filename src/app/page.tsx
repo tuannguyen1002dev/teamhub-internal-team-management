@@ -1,10 +1,15 @@
 'use client'
 
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import API from '@/shared/api';
 
 export default function HomePage() {
-  const [data, setData] = useState(null);
+
+  const router = useRouter()
+
+  useEffect(() => {
+    localStorage.getItem('authUser') ? null : router.push('/login')
+  }, [])
 
   return (
     <main className="items-center justify-center h-screen bg-black-50 flex flex-col space-y-10 ">

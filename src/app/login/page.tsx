@@ -3,24 +3,61 @@
 import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import API from '@/shared/api';
+import { useAuth } from "@/contexts/AuthProvider";
+import * as yup from 'yup'
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+
+
+const defaultValues = {
+  password: 'admin',
+  email: 'admin@materialize.com'
+}
+
+const schema = yup.object().shape({
+  email: yup.string().email().required(),
+  password: yup.string().min(5).required()
+})
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const auth = useAuth();
 
-  // ! Effect to handle the initial state of the form
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  const {
+    control,
+    setError,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    defaultValues,
+    mode: 'onBlur',
+    resolver: yupResolver(schema)
+  })
+
+
+
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget as HTMLFormElement);
     const data = Object.fromEntries(formData.entries());
+    const { email, password } = data as { email: string; password: string };
 
-    await API.post('/user', data) // Updated endpoint
-      .then((res: { data: any; }) => {
-        console.log(res.data);
-      })
-      .catch((err: any) => {
-        console.log(err);
+    // await API.post('/user', data).then((res: { data: any; }) => {
+    //   console.log(res.data);
+    // }).catch((err: any) => {
+    //   console.log(err);
+    // });
+
+    auth.login({ email, password }), () => {
+      setError('email', {
+        type: 'manual',
+        message: 'Email or Password is invalid'
       });
+    };
   }
+
+
+
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-blend-soft-light">
@@ -35,15 +72,7 @@ export default function LoginForm() {
             </linearGradient>
           </defs>
           <path fill="url(#waveGradient)" fillOpacity="1">
-            <animate
-              attributeName="d"
-              dur="12s"
-              repeatCount="indefinite"
-              values="M0,160 C480,100 960,220 1440,160 L1440,320 L0,320 Z;M0,180 C480,220 960,100 1440,180 L1440,320 L0,320 Z;M0,160 C480,100 960,220 1440,160 L1440,320 L0,320 Z"
-              keyTimes="0; 0.5; 1"
-              calcMode="spline"
-              keySplines="0.42 0 0.58 1; 0.42 0 0.58 1"
-            />
+            <animate attributeName="d" dur="12s" repeatCount="indefinite" values="M0,160 C480,100 960,220 1440,160 L1440,320 L0,320 Z;M0,180 C480,220 960,100 1440,180 L1440,320 L0,320 Z;M0,160 C480,100 960,220 1440,160 L1440,320 L0,320 Z" keyTimes="0; 0.5; 1" calcMode="spline" keySplines="0.42 0 0.58 1; 0.42 0 0.58 1" />
           </path>
         </svg>
       </div>
@@ -54,7 +83,7 @@ export default function LoginForm() {
           <h3 className="text-3xl font-bold text-black/50 text-center tracking-wide flex flex-col gap-3 select-none">
             Welcome Back
           </h3>
-          <form className="flex flex-col gap-8 pb-6" onSubmit={(e) => { handleSubmit(e) }}>
+          <form className="flex flex-col gap-8 pb-6" onSubmit={() => { handleSubmit(onSubmit) }}>
             <div className="relative group">
               <label htmlFor="email" className="block text-sm text-white font-medium mb-1 select">
                 Email
