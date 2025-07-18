@@ -13,7 +13,7 @@ export const generateToken = () => ({
   Authorization: `Bearer ${AuthService.getAccessToken()}`,
 });
 
-const API_URL = "http://localhost:5050/api";
+const API_URL = "http://localhost:5050";
 
 function getApi(path: string, options: any = {}) {
   return axios.get(`${API_URL}/${path.replace(/ ^\//, "")}`, {
