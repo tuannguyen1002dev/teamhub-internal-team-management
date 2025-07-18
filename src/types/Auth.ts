@@ -18,8 +18,6 @@ export type LoginParams = {
 export type AuthValueType = {
   loading: boolean
   setLoading: (value: boolean) => void
-  isInitialized: boolean
-  setIsInitialized: (value: boolean) => void
   user: UserType | null
   setUser: (value: UserType | null) => void
   isAuthenticated: boolean

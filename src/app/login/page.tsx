@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import API from '@/shared/api';
+import API from '@/shared/utils/api';
 import { useAuth } from "@/contexts/AuthProvider";
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
@@ -36,7 +36,7 @@ export default function LoginForm() {
 
 
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(event: any) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget as HTMLFormElement);
     const data = Object.fromEntries(formData.entries());
@@ -83,7 +83,7 @@ export default function LoginForm() {
           <h3 className="text-3xl font-bold text-black/50 text-center tracking-wide flex flex-col gap-3 select-none">
             Welcome Back
           </h3>
-          <form className="flex flex-col gap-8 pb-6" onSubmit={() => { handleSubmit(onSubmit) }}>
+          <form className="flex flex-col gap-8 pb-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="relative group">
               <label htmlFor="email" className="block text-sm text-white font-medium mb-1 select">
                 Email

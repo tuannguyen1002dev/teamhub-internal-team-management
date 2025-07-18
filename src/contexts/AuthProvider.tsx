@@ -5,18 +5,18 @@ import { UserType } from '@/types/UserType'
 import { LoginParams, ErrCallbackType } from '@/types/Auth'
 import { usePathname, useRouter } from 'next/navigation'
 import { AuthValueType } from '@/types/Auth'
-import Api from '@/shared/api'
-import { CookiesStorage } from '@/shared/cookie'
+import Api from '@/shared/utils/api'
+import { CookiesStorage } from '@/shared/utils/cookie'
+import { AuthService } from '@/shared/services/auth.services'
+
 
 const defaultProvider: AuthValueType = {
   user: null,
   loading: true,
   setUser: () => null,
   setLoading: () => Boolean,
-  isInitialized: false,
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
-  setIsInitialized: () => Boolean,
   isAuthenticated: false,
   hasRole: () => false,
   hasPermission: () => false,
@@ -24,15 +24,16 @@ const defaultProvider: AuthValueType = {
   fallback: '/login',
 }
 
+const AuthContext = createContext(defaultProvider);
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
   const [user, setUser] = useState<UserType | null>(defaultProvider.user)
   const [loading, setLoading] = useState<boolean>(defaultProvider.loading)
-  const [isInitialized, setIsInitialized] = useState<boolean>(defaultProvider.isInitialized)
 
   useEffect(() => {
     Api.post('auth/me').then((res) => {
-      CookiesStorage.setAccessToken(res.data.accessToken)
+      AuthService.setAccessToken(res.data.accessToken)
     }).then(() => {
       Api.get('auth/me').then((res) => {
         console.log(res.headers) //get accessToken from headers
@@ -41,14 +42,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   }, [])
 
-  const loginHandler = (params: LoginParams, errorCallback?: ErrCallbackType) => {
+  function HandleLogin(params: LoginParams, errorCallback?: ErrCallbackType) {
 
-    localStorage.setItem('authUser', JSON.stringify(userData))
   }
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem('authUser')
+  const HandleLogout = () => {
+
   }
 
   const hasRole = (roles: UserType['role']) => {
@@ -68,28 +67,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return hasRoles && hasPermissions
   }
 
-  const value: AuthContextType = {
+  const value: AuthValueType = {
     user,
-    isAuthenticated: !!user,
-    login: loginHandler,
-    logout,
+    loading,
+    setUser,
+    setLoading,
+    login: HandleLogin,
+    logout: HandleLogout,
+    isAuthenticated: false,
     hasRole,
     hasPermission,
     canAccess,
     fallback: '/login',
   }
 
-  return <AuthContext.Provider value={{
-    ...value,
-    hasRole: (roles: UserType['role']) => {
-      if (!user) return false
-      return roles.includes(user.role)
-    },
-    hasPermission(permissions) {
-      if (!user || !user.permissions) return false
-      return permissions.every(permission => (user.permissions ?? []).includes(permission))
-    },
-  }}>
+  return <AuthContext.Provider
+    value={{
+      ...value,
+      hasRole: (roles: UserType['role']) => {
+        return value.user ? roles.includes(value.user.role) : false;
+      },
+      hasPermission: (permissions: string[]) => {
+        const userPermissions = value.user?.permissions ?? [];
+        return permissions.every(permission =>
+          userPermissions.includes(permission)
+        );
+      },
+    }}
+  >
     {children}
   </AuthContext.Provider>
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import useDialog from '@/contexts/DialogProvider';
-import Api from '@/shared/api';
+import Api from '@/shared/utils/api';
 import React, { useEffect, useState } from 'react';
 
 import { useForm, Controller, SubmitHandler } from "react-hook-form"

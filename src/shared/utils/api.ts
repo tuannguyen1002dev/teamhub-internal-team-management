@@ -3,14 +3,14 @@ import axios, { CancelToken } from "axios";
 // import { API_URL } from "@/config/setting";
 
 // import { ErrCallbackType } from 'src/context/types';
-import { CookiesStorage } from "./cookie";
+import { AuthService } from "../services/auth.services";
 
 const defaultOptions = {};
 
 // **  Embeded Token into Authorization field in HTTP's header
 
 export const generateToken = () => ({
-  Authorization: `Bearer ${CookiesStorage.getAccessToken()}`,
+  Authorization: `Bearer ${AuthService.getAccessToken()}`,
 });
 
 const API_URL = "http://localhost:5050/api";

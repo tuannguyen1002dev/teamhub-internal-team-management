@@ -8,7 +8,7 @@ export default function HomePage() {
   const router = useRouter()
 
   useEffect(() => {
-    localStorage.getItem('authUser') ? null : router.push('/login')
+    // localStorage.getItem('authUser') ? null : router.push('/login')
   }, [])
 
   return (
