@@ -38,11 +38,21 @@ const UserList = () => {
   // !! Dialog contentds
   interface IFormInputs {
     email: string
+    fullname: string
+    username: string
+    phone: string
+    dateofbirth: string
+    address: string
   }
 
   const { handleSubmit, control, reset } = useForm<IFormInputs>({
     defaultValues: {
       email: '',
+      fullname: '',
+      username: '',
+      phone: '',
+      dateofbirth: '',
+      address: '',
     },
   })
   const onSubmit: SubmitHandler<IFormInputs> = (data) => console.log(data)
@@ -109,10 +119,10 @@ const UserList = () => {
               Full Name
             </label>
             <Controller
-              name="email"
+              name="fullname"
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <input {...field}
+              render={({ field }) => <input {...field} placeholder='full-name'
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
               />}
             />
@@ -122,10 +132,10 @@ const UserList = () => {
               Username
             </label>
             <Controller
-              name="email"
+              name="username"
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <input {...field}
+              render={({ field }) => <input {...field} placeholder='Username'
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
               />}
             />
@@ -148,10 +158,10 @@ const UserList = () => {
               Phone number
             </label>
             <Controller
-              name="email"
+              name="phone"
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <input {...field}
+              render={({ field }) => <input {...field} placeholder="phone"
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
               />}
             />
@@ -161,10 +171,10 @@ const UserList = () => {
               Date of birth
             </label>
             <Controller
-              name="email"
+              name="dateofbirth"
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <input {...field}
+              render={({ field }) => <input {...field} placeholder="Date of birth"
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
               />}
             />
@@ -174,10 +184,10 @@ const UserList = () => {
               Address
             </label>
             <Controller
-              name="email"
+              name="address"
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <input {...field}
+              render={({ field }) => <input {...field} placeholder="address"
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
               />}
             />

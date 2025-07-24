@@ -48,6 +48,14 @@ export const AuthService = {
   //! Auth Endpoint
   authMe(storedToken: string) {
     return Api.get(authConfig.authMeEndPoint, { headers: { Authorization: storedToken } })
+  },
+  reAuthMe(storedToken: string) {
+    return Api.post(authConfig.reAuthMeEndpoint, { accessToken: this.getAccessToken(), refreshToken: this.getRefAccessToken() }, { headers: { Authorization: storedToken } })
+  },
+
+  // TODO: Login
+  logMeIn(params: {}) {
+    return Api.post(authConfig.loginEndpoint,params, false)
   }
 
 }
