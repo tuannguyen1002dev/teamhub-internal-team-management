@@ -21,9 +21,9 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
 
   return (
 
-    <div className="w-screen h-screen relative overflow-hidden">
+    <div className="w-screen h-screen relative overflow-hidden bg-gray-700/50">
       {/* Animation Layer */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      {/* <div className="absolute inset-0 z-0 overflow-hidden">
         <svg className="absolute w-full h-full" viewBox="0 0 1440 320" preserveAspectRatio="none">
           <defs>
             <linearGradient id="waveGradient" x1="0" x2="1" y1="0" y2="1">
@@ -44,7 +44,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
             />
           </path>
         </svg>
-      </div>
+      </div> */}
 
       {/* Contents layer */}
       <div className="relative h-screen w-screen flex flex-row gap-6 p-6 bg-transparent">
