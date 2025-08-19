@@ -16,14 +16,13 @@ const UserList = () => {
   }
 
   function fetchUserList(): void {
-    Api.get('user').then((res) => {
-      if (res.data) {
-        setUserList(res.data)
-        console.log(res.data)
-      }
-    }).catch((res) => {
-
-    })
+    fetch("/api/users").then((res) => res.json())
+      .then((data) => {
+        setUserList(data);
+        console.log('user Data:', data);
+      }).catch((err) => {
+        console.error(err);
+      });
   }
 
   function CreateUserViaEmail() {
