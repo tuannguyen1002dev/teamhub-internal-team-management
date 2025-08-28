@@ -1,5 +1,5 @@
 import Api from "@/shared/utils/api";
-import { CookiesStorage } from "../utils/cookie";
+import { CookiesStorage } from "@/shared/utils/cookie";
 import authConfig from '@/config/auth'
 
 export const AuthKey = {

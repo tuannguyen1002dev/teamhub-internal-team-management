@@ -1,6 +1,8 @@
 'use client'
 
-import Api from '@/shared/utils/api';
+import { prisma } from "@/lib/prisma";
+
+
 import React, { useEffect, useState } from 'react';
 
 import { useForm, Controller, SubmitHandler, useWatch } from "react-hook-form"
@@ -15,18 +17,12 @@ const UserList = () => {
     setOpenCRUDPanel(!openCRUDPanel)
   }
 
-  function fetchUserList(): void {
-    fetch("/api/users").then((res) => res.json())
-      .then((data) => {
-        setUserList(data);
-        console.log('user Data:', data);
-      }).catch((err) => {
-        console.error(err);
-      });
-  }
-
-  function CreateUserViaEmail() {
-    Api.post('user', {}).then()
+  async function fetchUserList() {
+    fetch('/api/users').then((res) => {
+      // console.log(res);
+    }).catch((error) => {
+      console.error('Error fetching user list:', error);
+    })
   }
 
   useEffect(() => {
@@ -55,14 +51,6 @@ const UserList = () => {
   })
   const onSubmit: SubmitHandler<IFormInputs> = (data) => {
     console.log(data);
-    Api.post('user', data).then((res) => {
-      if (res.data) {
-        reset();
-        fetchUserList();
-      }
-    }).catch((err) => {
-      console.error(err.response?.data || err.message);
-    });
   }
 
 
