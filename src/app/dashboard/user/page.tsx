@@ -1,6 +1,7 @@
 'use client'
 
 import { prisma } from "@/lib/prisma";
+import Api from "@/shared/utils/api";
 
 
 import React, { useEffect, useState } from 'react';
@@ -17,11 +18,11 @@ const UserList = () => {
     setOpenCRUDPanel(!openCRUDPanel)
   }
 
-  async function fetchUserList() {
-    fetch('/api/users').then((res) => {
-      // console.log(res);
-    }).catch((error) => {
-      console.error('Error fetching user list:', error);
+  function fetchUserList() {
+    Api.get('api/users').then(res => {
+      console.log(res.data);
+    }).catch(err => {
+      console.log(err);
     })
   }
 
