@@ -1,3 +1,5 @@
+'use client';
+
 import Cookies from 'universal-cookie';
 import { addMonths } from 'date-fns';
 import { getCurrentDomain } from "./common";
