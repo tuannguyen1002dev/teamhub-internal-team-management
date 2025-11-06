@@ -8,7 +8,7 @@ import { ChevronDown, ChevronRight, ChevronUp, LayoutDashboard, Mail, User } fro
 // !! Nav types
 import { NavGroup, NavLink, NavSectionTitle, VerticalNavItemsType } from '@/types/structure/NavBar'
 
-const animationClasses = "transition-all duration-500 ease-in-out";
+const animationClasses = "transform transition-all duration-500 ease-in-out";
 
 const navigation: VerticalNavItemsType = [
   {
@@ -71,7 +71,7 @@ export function NavbarItem(props: { sideBarState: boolean }) {
                 )}
               </button>
               {items.children && (
-                <div className={`transition-all duration-500 ease-in-out ${isExpanded ? 'w-full opacity-100' : 'w-0 opacity-0'}`} style={{ maxHeight: isExpanded ? `${items.children.length * 2.5}rem` : '0' }}   >
+                <div className={`${animationClasses} ${isExpanded ? 'w-full opacity-100' : 'w-0 opacity-0'}`} style={{ maxHeight: isExpanded ? `${items.children.length * 2.5}rem` : '0' }}   >
                   {items.children.map((child, childIndex) => (
                     <div key={childIndex} className="p-2 pl-10 text-sm text-white transition-all duration-500 ease-in-out hover:bg-gray-700 transform hover:scale-105 rounded-2xl cursor-pointer" onClick={() => { if ('path' in child && child.path) router.push(child.path) }} >
                       {child.title}

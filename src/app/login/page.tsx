@@ -81,7 +81,7 @@ export default function LoginForm() {
       <div className="relative z-10 flex items-center justify-center h-full">
         <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-8 w-[400px] animate-fade-in flex flex-col gap-8">
           <h3 className="text-3xl font-bold text-black/50 text-center tracking-wide flex flex-col gap-3 select-none">
-            Welcome Back
+            Welcome
           </h3>
           <form className="flex flex-col gap-8 pb-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="relative group">

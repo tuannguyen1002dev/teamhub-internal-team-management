@@ -23,7 +23,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
 
     <div className="w-screen h-screen relative overflow-hidden bg-gray-700/50">
       {/* Animation Layer */}
-      {/* <div className="absolute inset-0 z-0 overflow-hidden">
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <svg className="absolute w-full h-full" viewBox="0 0 1440 320" preserveAspectRatio="none">
           <defs>
             <linearGradient id="waveGradient" x1="0" x2="1" y1="0" y2="1">
@@ -44,32 +44,31 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
             />
           </path>
         </svg>
-      </div> */}
+      </div>
 
       {/* Contents layer */}
       <div className="relative h-screen w-screen flex flex-row gap-6 p-6 bg-transparent">
-        <div className={`rounded-3xl ${animationClasses} h-[100%] ${sideBarState ? 'w-[5%]' : 'w-[12%]'}`}>
+        <div className={`rounded-3xl ${animationClasses} h-[100%] ${sideBarState ? 'w-[10%]' : 'w-[20%]'} bg-black/30 backdrop-blur-md p-3`}>
           <div className={`relative flex flex-row justify-center items-center ${animationClasses} ${sideBarState ? 'gap-0' : 'gap-3'}`}>
             <div className={`flex-shrink-0 ${animationClasses} ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-40 opacity-100 overflow-hidden'}`}>
-              <div className="text-2xl font-bold text-white text-center p-3">TeamHub</div>
+              <div className="text-2xl font-bold text-white p-3">TeamHub</div>
             </div>
-            <div className={`${animationClasses} transform ${sideBarState ? 'translate-x-[0%] translate-y-[0%] overflow-hidden' : 'translate-x-[100%] translate-y-[0%] overflow-hidden'}`}>
-              <button className="flex justify-center items-center shadow-2xs rounded-4xl p-1" onClick={() => switchSideBarSate()}>
+            <div className={`${animationClasses} ${sideBarState ? 'translate-x-[0%] translate-y-[0%] overflow-hidden' : 'translate-x-[00%] translate-y-[0%] overflow-hidden'}`}>
+              <button className={`${animationClasses} hover:bg-gray-700 rounded-xl p-2 ${sideBarState ? 'rotate-180' : 'rotate-0'}`} onClick={() => switchSideBarSate()}>
                 <ChevronLeft />
               </button>
             </div>
           </div>
           <Sidebar sideBarState={sideBarState} />
         </div>
-        <div className={`flex bg-black/30 backdrop-blur-md rounded-3xl ${animationClasses} h-[100%] ${sideBarState ? 'w-[95%]' : 'w-[88%]'}`}>
+        <div className={`flex bg-black/30 backdrop-blur-md rounded-3xl ${animationClasses} h-[100%] ${sideBarState ? 'w-[90%]' : 'w-[80%]'}`}>
           <div className="flex flex-col w-full h-full">
             <div className="flex flex-row justify-between items-center px-6 py-3 rounded-t-3xl border-b border-white/20">
               <span className="text-2xl font-bold text-white">
-
               </span>
-              <div className="border border-white/20 rounded-full p-2 text-white hover:bg-white/90 hover:text-black transition-all duration-500 ease-in-out cursor-pointer  ">
+              <button className={` ${animationClasses} border border-white/30 rounded-xl p-2 text-white hover:bg-gray-700`} onClick={() => router.push('/login')}>
                 <User />
-              </div>
+              </button>
             </div>
             <div className="flex-1 overflow-y-auto px-6 pb-6 pt-3">
               {children}
