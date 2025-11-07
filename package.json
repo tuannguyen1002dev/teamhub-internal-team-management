@@ -14,9 +14,6 @@
     "prisma:generate": "prisma generate",
     "postinstall": "prisma generate"
   },
-  "prisma": {
-    "schema": "prisma/schema.prisma"
-  },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
     "@prisma/client": "^6.15.0",
@@ -28,7 +25,7 @@
     "lucide-react": "^0.510.0",
     "next": "15.3.2",
     "next-auth": "^4.24.11",
-    "prisma": "^6.15.0",
+    "prisma": "^6.19.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.62.0",
