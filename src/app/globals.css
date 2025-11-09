@@ -24,3 +24,28 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@layer components {
+  .input-field-container {
+    @apply flex flex-row items-center gap-3 w-full;
+  }
+
+  .btn-primary {
+    @apply flex-shrink-0 px-3 py-2 rounded-xl text-white hover:text-white/50 bg-black/20 hover:bg-black/50 transition duration-300 ease-in-out;
+  }
+
+  .input-field-primary {
+    @apply flex-1 px-3 py-2 rounded-xl outline-none transition-all duration-500 bg-black/10 ring-0 ring-black/10 focus:bg-black/30 focus:ring-1 focus:ring-white/30;
+  }
+}

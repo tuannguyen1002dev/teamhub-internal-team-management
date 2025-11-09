@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm, Controller, SubmitHandler, useWatch } from "react-hook-form"
 
 
-const UserList = () => {
+export default function UserList() {
 
   const [userList, setUserList] = useState<any[]>([])
   const [openCRUDPanel, setOpenCRUDPanel] = useState<boolean>(false)
@@ -211,6 +211,4 @@ const UserList = () => {
       </div>
     </div >
   );
-};
-
-export default UserList;
+}

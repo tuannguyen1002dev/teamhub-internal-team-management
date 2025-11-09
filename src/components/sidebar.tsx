@@ -17,6 +17,10 @@ const navigation: VerticalNavItemsType = [
     children: [
       { title: 'Overview', path: '/dashboard' },
       { title: 'Invitation', path: '/dashboard/invitation' },
+      { title: 'Overview', path: '/dashboard' },
+      { title: 'Invitation', path: '/dashboard/invitation' },
+      { title: 'Overview', path: '/dashboard' },
+      { title: 'Invitation', path: '/dashboard/invitation' },
     ]
   },
   { sectionTitle: 'Users section' },
@@ -58,7 +62,7 @@ export function NavbarItem(props: { sideBarState: boolean }) {
         if (isNavGroup(items)) {
           const isExpanded = sideBarState ? false : (expandedGroups[index] || false)
           return (
-            <div key={index} className="w-full">
+            <div key={index} className="w-full flex flex-col gap-2">
               <button className="flex flex-row justify-center items-center gap-1 cursor-pointer p-2 rounded-md hover:bg-gray-700 transition-all duration-500 ease-in-out transform hover:scale-105 w-full" onClick={() => !sideBarState ? toggleGroup(index) : router.push(items.children && Object(items.children[0]).path)} >
                 {items.icon && <items.icon className="text-white" />}
                 <span className={`font-bold text-lg flex-shrink-0 ${animationClasses} ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-30 opacity-100 overflow-hidden'}`}  >
@@ -71,14 +75,25 @@ export function NavbarItem(props: { sideBarState: boolean }) {
                 )}
               </button>
               {items.children && (
-                <div className={`${animationClasses} ${isExpanded ? 'w-full opacity-100' : 'w-0 opacity-0'}`} style={{ maxHeight: isExpanded ? `${items.children.length * 2.5}rem` : '0' }}   >
+                <div className={`flex flex-col gap-2 ${animationClasses} ${isExpanded ? 'w-full opacity-100' : 'w-0 opacity-0'}`} style={{ maxHeight: isExpanded ? `${items.children.length * 2.5}rem` : '0' }}   >
                   {items.children.map((child, childIndex) => (
-                    <div key={childIndex} className="p-2 pl-10 text-sm text-white transition-all duration-500 ease-in-out hover:bg-gray-700 transform hover:scale-105 rounded-2xl cursor-pointer" onClick={() => { if ('path' in child && child.path) router.push(child.path) }} >
+                    <div
+                      key={childIndex}
+                      className={`py-1 pl-11 text-left text-sm text-white rounded-md cursor-pointer hover:bg-gray-700/50 transform hover:scale-105`}
+                      style={{
+                        transform: isExpanded ? 'translateY(0)' : `translateY(${(childIndex + 1) * -2.5}rem)`,
+                        opacity: isExpanded ? 100 : 0,
+                        transition: `all ${(childIndex + 1) * 150}ms ease-in-out`,
+                        transitionDelay: isExpanded ? `0 ms` : `${(childIndex +10) + 100} ms`, // Add delay based on child index
+                      }}
+                      onClick={() => { if ('path' in child && child.path) router.push(child.path) }}
+                    >
                       {child.title}
                     </div>
                   ))}
                 </div>
-              )}
+              )
+              }
             </div>
           )
         }
@@ -91,7 +106,7 @@ export function NavbarItem(props: { sideBarState: boolean }) {
           </button>
         )
       })}
-    </div>
+    </div >
   )
 }
 
