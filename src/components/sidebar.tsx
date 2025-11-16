@@ -17,10 +17,6 @@ const navigation: VerticalNavItemsType = [
     children: [
       { title: 'Overview', path: '/dashboard' },
       { title: 'Invitation', path: '/dashboard/invitation' },
-      { title: 'Overview', path: '/dashboard' },
-      { title: 'Invitation', path: '/dashboard/invitation' },
-      { title: 'Overview', path: '/dashboard' },
-      { title: 'Invitation', path: '/dashboard/invitation' },
     ]
   },
   { sectionTitle: 'Users section' },
@@ -84,7 +80,7 @@ export function NavbarItem(props: { sideBarState: boolean }) {
                         transform: isExpanded ? 'translateY(0)' : `translateY(${(childIndex + 1) * -2.5}rem)`,
                         opacity: isExpanded ? 100 : 0,
                         transition: `all ${(childIndex + 1) * 150}ms ease-in-out`,
-                        transitionDelay: isExpanded ? `0 ms` : `${(childIndex +10) + 100} ms`, // Add delay based on child index
+                        transitionDelay: isExpanded ? `0 ms` : `${(childIndex + 10) + 100} ms`, // Add delay based on child index
                       }}
                       onClick={() => { if ('path' in child && child.path) router.push(child.path) }}
                     >

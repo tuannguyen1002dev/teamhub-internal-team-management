@@ -18,10 +18,12 @@ export default function UserList() {
     setOpenCRUDPanel(!openCRUDPanel)
   }
 
-  async function fetchUserList() {
-    const res = await fetch("/api/users");
-    const data = await res.json();
-    console.log(data);
+  function fetchUserList() {
+    Api.get('/api/users').then((res) => {
+      console.log('Fetched users:', res.data);
+    }).catch((error) => {
+      console.error('Error fetching users:', error);
+    });
   }
 
   useEffect(() => {

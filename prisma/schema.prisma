@@ -7,17 +7,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  USER
+  ADMIN
+  OPERATOR
+  SUDO
+}
+
+enum UserPermission {
+  READ
+  WRITE
+  DELETE
+  EXECUTE
+}
+
 model User {
-  id          String    @id @default(cuid())
-  email       String    @unique
+  id          String         @id @default(cuid())
+  email       String         @unique
   fullname    String?
-  username    String?   @unique
-  password    String?   @map("hashed_password")
+  username    String?        @unique
+  password    String?        @map("hashed_password")
   dateOfBirth DateTime?
   phoneNumber String?
   address     String?
-  role        String    @default("USER,ADMIN,OPERATOR,SUDO")
-  permissions String    @default("READ,WRITE,DELETE")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  role        UserRole       @default(USER)
+  permissions UserPermission
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model Invitation {
+  id         String           @id @default(cuid())
+  email      String           @unique
+  token      String           @unique
+  status     InvitationStatus @default(PENDING)
+  acceptedAt DateTime?
+  createdAt  DateTime         @default(now())
+  createBy   String           @default("admin")
 }
