@@ -3,8 +3,40 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+}
+
+model User {
+  id          String      @id @default(cuid())
+  email       String      @unique
+  fullname    String?
+  username    String?
+  password    String?     @map("hashed_password")
+  dateOfBirth DateTime?
+  phoneNumber String?
+  address     String?
+  gender      UserGender?
+  role        UserRole
+  permissions String[]    @default(["READ"])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Invitation {
+  id         String           @id @default(cuid())
+  email      String           @unique
+  token      String           @unique
+  invLink    String           @unique
+  status     InvitationStatus @default(PENDING)
+  createdAt  DateTime         @default(now())
+  acceptedAt DateTime?
+  createBy   String           @default("admin")
+}
+
+enum UserGender {
+  Male
+  Female
+  Others
 }
 
 enum UserRole {
@@ -21,33 +53,8 @@ enum UserPermission {
   EXECUTE
 }
 
-model User {
-  id          String         @id @default(cuid())
-  email       String         @unique
-  fullname    String?
-  username    String?        @unique
-  password    String?        @map("hashed_password")
-  dateOfBirth DateTime?
-  phoneNumber String?
-  address     String?
-  role        UserRole       @default(USER)
-  permissions UserPermission
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-}
-
 enum InvitationStatus {
   PENDING
   ACCEPTED
-  DECLINED
-}
-
-model Invitation {
-  id         String           @id @default(cuid())
-  email      String           @unique
-  token      String           @unique
-  status     InvitationStatus @default(PENDING)
-  acceptedAt DateTime?
-  createdAt  DateTime         @default(now())
-  createBy   String           @default("admin")
+  EXPRIRED
 }

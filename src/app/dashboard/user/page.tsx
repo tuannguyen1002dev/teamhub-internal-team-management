@@ -1,6 +1,5 @@
 'use client'
 
-import { prisma } from "@/lib/prisma";
 import Api from "@/shared/utils/api";
 
 
