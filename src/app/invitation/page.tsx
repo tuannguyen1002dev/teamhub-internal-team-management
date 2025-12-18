@@ -25,7 +25,6 @@ export default function AcceptInvitationPage() {
       return;
     }
 
-
     // Call API to verify token
     Api.get(`/api/invitation?token=${encodeURIComponent(token)}`)
       .then((res) => {
@@ -38,27 +37,6 @@ export default function AcceptInvitationPage() {
         setMessage(err.response?.data?.error || 'Something went wrong.');
       });
 
-
-    // const verifyInvitation = async () => {
-    //   try {
-    //     const res = await fetch(`/api/invitation?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}`);
-    //     const data = await res.json();
-
-    //     if (!res.ok) {
-    //       setStatus('error');
-    //       setMessage(data.error || 'Failed to verify invitation.');
-    //       return;
-    //     }
-
-    //     setStatus('success');
-    //     setMessage(data.message || 'Invitation verified successfully.');
-    //   } catch (err) {
-    //     setStatus('error');
-    //     setMessage('Something went wrong.');
-    //   }
-    // };
-
-    // verifyInvitation();
   }, [searchParams]);
 
   // UI states
@@ -86,7 +64,7 @@ export default function AcceptInvitationPage() {
               <ShieldX size={36} color={"red"} /> <span className="font-bold text-2xl">{message}</span>
             </p>
           </div>
-        </div >
+        </div>
       </div>
     );
   }
