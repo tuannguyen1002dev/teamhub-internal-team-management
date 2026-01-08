@@ -5,6 +5,7 @@ import Sidebar from '@/components/sidebar'
 import { ChevronLeft, User } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 import { PageTitleProvider } from '@/contexts/PageTitleProvider'
+import { getSidebarItems } from './sidebarProjection'
 
 // Define reusable animation classes
 const animationClasses = "transition-all duration-500 ease-in-out";
@@ -34,7 +35,7 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
               </button>
             </div>
           </div>
-          <Sidebar sideBarState={sideBarState} />
+          <Sidebar sideBarState={sideBarState} registryItems={getSidebarItems()} />
         </div>
         <div className={`flex bg-black/30 backdrop-blur-md rounded-3xl ${animationClasses} h-[100%] ${sideBarState ? 'w-[90%]' : 'w-[80%]'}`}>
           <div className="flex flex-col w-full h-full">

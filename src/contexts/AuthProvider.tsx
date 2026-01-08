@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { UserType } from '@/types/UserType'
+import { AccountType } from '@/types/UserType'
 import { LoginParams, ErrCallbackType } from '@/types/Auth'
 import { usePathname, useRouter } from 'next/navigation'
 import { AuthValueType, JwtPayload } from '@/types/Auth'
@@ -10,7 +10,7 @@ import { AuthService } from '@/shared/services/auth.services'
 
 
 const defaultProvider: AuthValueType = {
-  user: null,
+  account: null,
   isAuthenticated: false,
   isLoading: false,
   setAuthState: () => Promise.resolve(),
@@ -28,11 +28,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const auth = useAuth()
   const router = useRouter()
   const [authState, setAuthState] = useState<{
-    user: JwtPayload | null;
+    account: JwtPayload | null;
     isLoading: boolean;
     isAuthenticated: boolean
   }>({
-    user: null,
+    account: null,
     isLoading: true,
     isAuthenticated: false
   });
@@ -48,13 +48,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   //!: Main auth functions
   async function AuthInit(): Promise<void> {
-    if (AuthService.getAccessToken() && AuthService.getUserAccount() && authState.user !== AuthService.getUserAccount()) {
+    if (AuthService.getAccessToken() && AuthService.getUserAccount() && authState.account !== AuthService.getUserAccount()) {
       adaptUtil({ 'isLoading': true })
       AuthService.authMe(AuthService.getAccessToken()).then((res) => {
         console.log(res)
         adaptUtil({
           isLoading: true,
-          user: res.data
+          account: res.data
         })
       }).catch((errRes) => {
         console.log(errRes)
@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           AuthService.clearAccessToken()
           AuthService.clearUserAccount()
           adaptUtil({
-            user: null,
+            account: null,
             isLoading: true
           })
           router.push(auth.fallback)
@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } else {
       AuthService.clearAccessToken()
       AuthService.clearUserAccount()
-      adaptUtil({ user: null })
+      adaptUtil({ account: null })
     }
     AuthInit()
   }
@@ -95,29 +95,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   }
 
-  const hasRole = (roles: UserType['role']) => {
-    if (!authState.user) return false
-    return roles.includes(authState.user.role)
+  const hasRole = (roles: AccountType['role']) => {
+    if (!authState.account) return false
+    return roles.includes(authState.account.role)
   }
 
   const hasPermission = (permissions: string[]) => {
-    if (!authState.user || !authState.user.permissions) return false
-    const userPermissions = values.user?.permissions ?? [];
+    if (!authState.account || !authState.account.permissions) return false
+    const accountPermissions: any = values.account?.permissions ?? [];
     return permissions.every(permission =>
-      userPermissions.includes(permission)
+      accountPermissions.includes(permission)
     );
   }
 
-  const canAccess = (roles?: UserType['role'], permissions?: string[]) => {
-    if (roles && permissions && authState.user?.role && authState.user?.permissions) {
-      roles.includes(authState.user.role)
-      const userPermissions = values.user?.permissions ?? [];
-      return permissions.every(permission => userPermissions.includes(permission));
+  const canAccess = (roles?: AccountType['role'], permissions?: string[]) => {
+    if (roles && permissions && authState.account?.role && authState.account?.permissions) {
+      roles.includes(authState.account.role)
+      const accountPermissions: any = values.account?.permissions ?? [];
+      return accountPermissions.every((permission: string[]) => accountPermissions?.includes(permission));
     }
   }
 
   const values = {
-    user: authState.user,
+    account: authState.account,
     isAuthenticated: authState.isAuthenticated,
     isLoading: authState.isLoading,
     setAuthState: () => adaptUtil,

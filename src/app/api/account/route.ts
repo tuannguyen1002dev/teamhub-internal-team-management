@@ -2,25 +2,24 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
-// GET all users
+// GET all Accounts
 export async function GET() {
   try {
-    const users = await prisma.user.findMany(); // Example model "User"
-    return NextResponse.json(users);
+    const accountList = await prisma.account.findMany(); // Example model "Account"
+    return NextResponse.json(accountList);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch accounts" }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest) {
-
   try {
-    const { email, fullname, username, dateOfBirth, phoneNumber, address, token, password } = await req.json();
+    const { email, fullname, username, dateofbirth, phone, address, token, password } = await req.json();
 
-    // create new user based on invitation acceptance
+    // create new account based on invitation acceptance
     const invitationExists = await prisma.invitation.findUnique({ where: { email, token }, });
     const checkInvitationExpiry = invitationExists && (new Date().getTime() - invitationExists.createdAt.getTime()) / (1000 * 60 * 60) < 72;
-    const emailExists = await prisma.user.findUnique({ where: { email }, });
+    const emailExists = await prisma.account.findUnique({ where: { email }, });
 
     if (!invitationExists) {
       return NextResponse.json({ error: "Invalid invitation token or email" }, { status: 401 });
@@ -33,17 +32,17 @@ export async function POST(req: NextRequest) {
     }
 
     await prisma.$transaction(async (tx) => {
-      const newUser = await tx.user.create({
+      const newAccount = await tx.account.create({
         data: {
           email,
           fullname,
           username,
-          dateOfBirth: new Date(dateOfBirth),
-          phoneNumber,
+          dateofbirth: new Date(dateofbirth),
+          phone,
           address,
-          password: await bcrypt.hash(password, 10), // default password, should prompt change on first login
+          password: await bcrypt.hash(password, 10),
           role: "USER",
-          permissions: ["READ"], // 
+          permissions: ["READ", "WRITE", "UPDATE", "DELETE"],
         },
       })
 
@@ -54,8 +53,8 @@ export async function POST(req: NextRequest) {
         },
       })
     })
-    return NextResponse.json({ message: "create user successfully" }, { status: 201 });
+    return NextResponse.json({ message: "create account successfully" }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to create account" }, { status: 500 });
   }
 }

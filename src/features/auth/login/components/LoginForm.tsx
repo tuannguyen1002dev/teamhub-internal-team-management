@@ -1,64 +1,44 @@
 'use client'
 
-import { useState, useEffect } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import API from '@/shared/utils/api';
-import { useAuth } from "@/contexts/AuthProvider";
-import * as yup from 'yup'
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { useState } from "react"
+import { Eye, EyeOff } from "lucide-react"
+import { useForm, Controller } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
 
+import { loginSchema } from "../schemas/login.schema"
+import { useLogin } from "../hooks/useLogin"
+import { LoginPayload } from "../types"
 
-const defaultValues = {
-  password: 'admin',
-  email: 'admin@materialize.com'
-}
-
-const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().min(5).required()
-})
-
-export default function LoginForm() {
-  const [showPassword, setShowPassword] = useState(false);
-  const auth = useAuth();
+export function LoginForm() {
+  const [showPassword, setShowPassword] = useState(false)
+  const { submit } = useLogin()
 
   const {
     control,
-    setError,
     handleSubmit,
-    formState: { errors }
-  } = useForm({
-    defaultValues,
-    mode: 'onBlur',
-    resolver: yupResolver(schema)
+    setError,
+    formState: { errors },
+  } = useForm<LoginPayload>({
+    defaultValues: {
+      email: "admin@materialize.com",
+      password: "admin",
+    },
+    resolver: yupResolver(loginSchema),
   })
 
-
-
-  function onSubmit(event: any) {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget as HTMLFormElement);
-    const data = Object.fromEntries(formData.entries());
-    const { email, password } = data as { email: string; password: string };
-
-    // await API.post('/user', data).then((res: { data: any; }) => {
-    //   console.log(res.data);
-    // }).catch((err: any) => {
-    //   console.log(err);
-    // });
-
-    auth.login({ email, password }), () => {
-      setError('email', {
-        type: 'manual',
-        message: 'Email or Password is invalid'
-      });
-    };
+  async function onSubmit(data: LoginPayload) {
+    try {
+      await submit(data)
+    } catch {
+      setError("email", {
+        type: "manual",
+        message: "Email or password is invalid",
+      })
+    }
   }
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-blend-soft-light">
-
       {/* Login Form Container */}
       <div className="relative z-10 flex items-center justify-center h-full">
         <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-8 w-[400px] animate-fade-in flex flex-col gap-8">
@@ -94,5 +74,5 @@ export default function LoginForm() {
         </div>
       </div >
     </div >
-  );
+  )
 }

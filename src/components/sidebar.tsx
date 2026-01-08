@@ -10,19 +10,19 @@ import { NavGroup, NavLink, NavSectionTitle, VerticalNavItemsType } from '@/type
 
 const animationClasses = "transform transition-all duration-500 ease-in-out";
 
-const navigation: VerticalNavItemsType = [
-  {
-    title: 'Dashboards',
-    icon: LayoutDashboard,
-    children: [
-      { title: 'Overview', path: '/dashboard' },
-      { title: 'Invitation', path: '/dashboard/invitation' },
-    ]
-  },
-  { sectionTitle: 'Users section' },
-  { title: 'User', icon: User, path: '/dashboard/user' },
-  { title: 'Email', icon: Mail, path: '/apps/email' },
-]
+// const navigation: VerticalNavItemsType = [
+//   {
+//     title: 'Dashboards',
+//     icon: LayoutDashboard,
+//     children: [
+//       { title: 'Overview', path: '/dashboard' },
+//       { title: 'Invitation', path: '/dashboard/invitation' },
+//     ]
+//   },
+//   { sectionTitle: 'Users section' },
+//   { title: 'User', icon: User, path: '/dashboard/user' },
+//   { title: 'Email', icon: Mail, path: '/apps/email' },
+// ]
 
 function isNavSectionTitle(item: any): item is NavSectionTitle {
   return (item as NavSectionTitle).sectionTitle !== undefined
@@ -32,8 +32,8 @@ function isNavGroup(item: any): item is NavGroup {
   return (item as NavGroup).children !== undefined
 }
 
-export function NavbarItem(props: { sideBarState: boolean }) {
-  const { sideBarState } = props
+export function NavbarItem(props: { sideBarState: boolean, registryItems: VerticalNavItemsType }) {
+  const { sideBarState, registryItems } = props
   const [expandedGroups, setExpandedGroups] = useState<Record<number, boolean>>({})
   const router = useRouter()
 
@@ -43,7 +43,7 @@ export function NavbarItem(props: { sideBarState: boolean }) {
 
   return (
     <div className={`flex-1 flex flex-col gap-3 select-none ${animationClasses} ${sideBarState ? 'justify-center items-center w-0' : 'justify-center items-start w-40'}`}>
-      {navigation.map((items, index: number) => {
+      {registryItems.map((items, index: number) => {
         if (isNavSectionTitle(items)) {
           return (
             <div key={index} className="w-full">
@@ -59,7 +59,16 @@ export function NavbarItem(props: { sideBarState: boolean }) {
           const isExpanded = sideBarState ? false : (expandedGroups[index] || false)
           return (
             <div key={index} className="w-full flex flex-col gap-2">
-              <button className="flex flex-row justify-center items-center gap-1 cursor-pointer p-2 rounded-md hover:bg-gray-700 transition-all duration-500 ease-in-out transform hover:scale-105 w-full" onClick={() => !sideBarState ? toggleGroup(index) : router.push(items.children && Object(items.children[0]).path)} >
+              <button className="flex flex-row justify-center items-center gap-1 cursor-pointer p-2 rounded-md hover:bg-gray-700 transition-all duration-500 ease-in-out transform hover:scale-105 w-full"
+                onClick={() => {
+                  const firstChild = items.children?.[0]
+                  if (firstChild && 'path' in firstChild) {
+                    !sideBarState
+                      ? toggleGroup(index)
+                      : router.push(items.children && Object(firstChild).path)
+                  }
+                }
+                } >
                 {items.icon && <items.icon className="text-white" />}
                 <span className={`font-bold text-lg flex-shrink-0 ${animationClasses} ${sideBarState ? 'w-0 opacity-0 overflow-hidden' : 'w-30 opacity-100 overflow-hidden'}`}  >
                   {items.title}
@@ -106,12 +115,12 @@ export function NavbarItem(props: { sideBarState: boolean }) {
   )
 }
 
-export default function Sidebar(props: { sideBarState: boolean }) {
-  const { sideBarState } = props
+export default function Sidebar(props: { sideBarState: boolean, registryItems: VerticalNavItemsType }) {
+  const { sideBarState, registryItems } = props
 
   return (
     <div className="flex flex-row justify-center items-center p-3 w-[100%]">
-      <NavbarItem sideBarState={sideBarState} />
+      <NavbarItem sideBarState={sideBarState} registryItems={registryItems} />
     </div>
   )
 }

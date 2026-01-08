@@ -6,21 +6,41 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id          String      @id @default(cuid())
-  email       String      @unique
+model Account {
+  id          String        @id @default(cuid())
+  email       String        @unique
   fullname    String?
   username    String?
-  password    String?     @map("hashed_password")
-  dateOfBirth DateTime?
-  phoneNumber String?
+  password    String?       @map("hashed_password")
+  status      AccountStatus @default(SUSPENDED)
+  dateofbirth DateTime?
+  phone       String?
   address     String?
-  gender      UserGender?
-  role        UserRole
-  permissions String[]    @default(["READ"])
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  gender      GenderOption?
+  role        AccountRole   @default(USER)
+  permissions String[]      @default(["READ", "WRITE", "UPDATE", "DELETE"])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum AccountRole {
+  ADMIN
+  USER
+  OPERATOR
+}
+
+enum GenderOption {
+  MALE
+  FEMALE
+  OTHER
+}
+
+// !___________________________________________________________________
 
 model Invitation {
   id         String           @id @default(cuid())
@@ -31,26 +51,6 @@ model Invitation {
   createdAt  DateTime         @default(now())
   acceptedAt DateTime?
   createBy   String           @default("admin")
-}
-
-enum UserGender {
-  Male
-  Female
-  Others
-}
-
-enum UserRole {
-  USER
-  ADMIN
-  OPERATOR
-  SUDO
-}
-
-enum UserPermission {
-  READ
-  WRITE
-  DELETE
-  EXECUTE
 }
 
 enum InvitationStatus {
