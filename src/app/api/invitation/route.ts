@@ -10,48 +10,18 @@ import { getCurrentDomain } from "@/shared/utils/common";
 export async function GET(req: NextRequest) {
   const { searchParams, search } = req.nextUrl;
   const receivedToken = searchParams.get('token');
-
-  if (search === '') {
-    // send all exsisting invitations
-    try {
-      const invitations = await prisma.invitation.findMany();
-      return NextResponse.json(invitations);
-    } catch (error) {
-      return NextResponse.json({ error: "Failed to fetch invitations" }, { status: 500 });
-    }
-  } else if (searchParams.has('token')) {
-
-    try {
-      // TODO: Check if URL is exsists 
-      if (!receivedToken) {
-        return NextResponse.json({ error: 'Missing token from URL' }, { status: 400 });
-      }
-
-      // TODO: check if the invitation exists/legit
-      const isExsists = await prisma.invitation.findFirst({
-        where: { token: receivedToken },
-      });
-      if (!isExsists) {
-        return NextResponse.json({ error: 'Invitation not found' }, { status: 401 });
-      }
-
-      // TODO: check if expired (72 hours)
-      const isExpired = (new Date().getTime() - isExsists.createdAt.getTime()) / (1000 * 60 * 60) >= 72;
-      if (isExpired) {
-        return NextResponse.json({ error: 'Invitation has expired' }, { status: 402 });
-      }
-
-      return NextResponse.json({ isExsists, message: "validated URL" }, { status: 200 });
-    } catch (error) {
-      return NextResponse.json({ error: 'Server error' }, { status: 500 });
-    }
+  // send all exsisting invitations
+  try {
+    const invitations = await prisma.invitation.findMany();
+    return NextResponse.json(invitations);
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to fetch invitations" }, { status: 500 });
   }
+
 }
 
 export async function POST(req: NextRequest) {
-
   try {
-
     const { email } = await req.json();
     if (!email || typeof email !== "string") {
       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
@@ -81,7 +51,7 @@ export async function POST(req: NextRequest) {
       data: {
         email: email,
         token: token,
-        invLink: `${!getCurrentDomain() ? "localhost:3000" : "checkpoint"}/onboard-invitation?token=${encodeURIComponent(token)}`,
+        invLink: `${!getCurrentDomain() ? "localhost:3000" : "checkpoint"}/accept-invitation?token=${encodeURIComponent(token)}`,
       },
     });
     return NextResponse.json(created, { status: 201 });

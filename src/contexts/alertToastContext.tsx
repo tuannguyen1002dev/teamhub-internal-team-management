@@ -41,9 +41,7 @@ function Toast({ message, type }: { message: string; type: ToastType }) {
         ${type === "success" ? "bg-green-600" : ""}
         ${type === "error" ? "bg-red-600" : ""}
         ${type === "warning" ? "bg-yellow-600" : ""}
-        ${type === "default" ? "bg-gray-800" : ""}
-      `}
-    >
+        ${type === "default" ? "bg-gray-800" : ""}`}>
       {message}
     </div>
   );

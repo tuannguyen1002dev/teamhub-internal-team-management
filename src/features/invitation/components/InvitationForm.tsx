@@ -5,12 +5,13 @@ import { useInvitationContext } from "../hooks/InvitationContext";
 import { InvitationFormInputProps } from "@/shared/contracts/invitation/invitation-formInput.contract"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { invitationSchema } from "../schemas/invitation.schema";
+import { useToast } from "@/contexts/alertToastContext";
 
 
 export default function InvitationForm() {
 
   const { createInvitation, loading } = useInvitationContext();
-
+  const { showToast } = useToast()
   const {
     control,
     handleSubmit,
@@ -27,10 +28,11 @@ export default function InvitationForm() {
     try {
       await createInvitation(data.email)
     } catch {
-      setError("email", {
-        type: "manual",
-        message: "Email or password is invalid",
-      })
+      // setError("email", {
+      //   type: "manual",
+      //   message: "Email or password is invalid",
+      // })
+      showToast(`${errors.email?.message}`, "error")
     }
   }
 
