@@ -1,4 +1,4 @@
-import { AccountView } from './components/_AccountView'
+import { AccountView } from './index'
 import { UsersRound } from 'lucide-react'
 import type FeatureManifest from '@/shared/types/FeatureManifest'
 

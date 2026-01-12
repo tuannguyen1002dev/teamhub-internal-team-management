@@ -50,16 +50,9 @@ export default function AcceptInvitationPage() {
 
   if (status === 'error') {
     return (
-      // <div className="flex h-screen flex-col items-center justify-center text-center">
-      //   <h1 className="text-2xl font-semibold text-red-600">Oops!</h1>
-      //   <p className="mt-2 text-gray-600">{message}</p>
-      // </div>
       <div className="relative h-screen w-full overflow-hidden bg-blend-soft-light">
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="bg-white/5 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-8 w-[80%] h-[80%] animate-fade-in flex justify-center items-center">
-            {/* <h3 className="text-3xl font-bold text-black/50 text-center tracking-wide flex flex-col gap-3 select-none">
-              Welcome
-            </h3> */}
             <p className="flex justify-center items-center gap-3">
               <ShieldX size={36} color={"red"} /> <span className="font-bold text-2xl">{message}</span>
             </p>
@@ -69,7 +62,7 @@ export default function AcceptInvitationPage() {
     );
   }
 
-  // Success page (first-time welcome)
+  // Success page (welcome)
   return (
     <div className="flex h-screen flex-col items-center justify-center bg-gray-50 px-6">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-md p-8 text-center">
@@ -78,7 +71,7 @@ export default function AcceptInvitationPage() {
           Hi <span className="font-medium">{invitationEmail}</span>, your invitation has been verified successfully.
         </p>
         <p className="mt-4 text-gray-500">Let's get your account ready.</p>
-        <button onClick={() => router.push('/invitation/setup-account')} className="mt-6 w-full rounded-xl bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 transition">
+        <button onClick={() => router.push('/onboard-invitation/setup-account')} className="mt-6 w-full rounded-xl bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 transition">
           Setup Your Account
         </button>
       </div>

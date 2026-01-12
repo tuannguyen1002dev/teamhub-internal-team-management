@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
       data: {
         email: email,
         token: token,
-        invLink: `${!getCurrentDomain() ? "localhost:3000" : "checkpoint"}/invitation?token=${encodeURIComponent(token)}`,
+        invLink: `${!getCurrentDomain() ? "localhost:3000" : "checkpoint"}/onboard-invitation?token=${encodeURIComponent(token)}`,
       },
     });
     return NextResponse.json(created, { status: 201 });
