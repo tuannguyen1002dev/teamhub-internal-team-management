@@ -54,7 +54,7 @@ function InvitationRow({ item, onCopy }: {
   return (
     <tr className="text-sm border-t border-white/5">
       <td className="px-4 max-w-15 truncate transition-all duration-300 ease-in-out cursor-pointer border-r border-white/10" title={item.email} onClick={() => onCopy(item.email)} >
-        {item._id}
+        {item.id}
       </td>
       <td className="px-4 py-2 border-r border-white/10">{item.email}</td>
       <td className="px-4 py-2 text-center border-r border-white/10">
