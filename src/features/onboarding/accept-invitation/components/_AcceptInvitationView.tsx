@@ -2,7 +2,7 @@
 'use client'
 
 import { useSearchParams, useRouter } from 'next/navigation'
-import { useAcceptInvitation } from '@/features/accept-invitation/hooks/useAcceptInvitation'
+import { useAcceptInvitation } from '@/features/onboarding/accept-invitation/hooks/useAcceptInvitation'
 import { LoadingState } from './LoadingState'
 import { ErrorState } from './ErrorState'
 import { SuccessState } from './SuccessState'
@@ -15,7 +15,12 @@ export function AcceptInvitationView() {
   if (status === 'loading') return <LoadingState />
   if (status === 'error') return <ErrorState message={message} />
 
+  function onSetupAccepted() {
+
+    router.push('/setup-account')
+  }
+
   return (
-    <SuccessState email={email} onContinue={() => router.push('/accept-invitation')} />
+    <SuccessState email={email} onContinue={() => onSetupAccepted()} />
   )
 }

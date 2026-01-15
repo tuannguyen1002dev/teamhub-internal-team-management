@@ -1,0 +1,1 @@
+export { AcceptInvitationView } from "./components/_AcceptInvitationView"
