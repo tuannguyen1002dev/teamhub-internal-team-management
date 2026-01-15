@@ -2,7 +2,7 @@
 import { useForm, Controller, SubmitHandler, } from "react-hook-form"
 
 import { useInvitationContext } from "../hooks/InvitationContext";
-import { InvitationFormInputProps } from "@/shared/contracts/invitation/invitation-formInput.contract"
+import { InvitationFormInputProps, formDefaultValues } from "@/shared/contracts/invitation/invitation-formInput.contract"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { invitationSchema } from "../schemas/invitation.schema";
 import { useToast } from "@/contexts/alertToastContext";
@@ -18,9 +18,7 @@ export default function InvitationForm() {
     setError,
     formState: { errors },
   } = useForm<InvitationFormInputProps>({
-    defaultValues: {
-      email: '',
-    },
+    defaultValues: formDefaultValues,
     resolver: yupResolver(invitationSchema),
   })
 

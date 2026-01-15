@@ -2,7 +2,7 @@ export interface AccountFormInput {
   email: string,
 }
 
-export const defaultValues: AccountFormInput = {
+export const formDefaultValues: AccountFormInput = {
   email: '',
 }
 
