@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 
 import { loginSchema } from "../schemas/login.schema"
 import { useLogin } from "../hooks/useLogin"
-import { LoginPayload } from "../types"
+import { LoginPayload, formDefaultValues } from "../types"
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -19,10 +19,7 @@ export function LoginForm() {
     setError,
     formState: { errors },
   } = useForm<LoginPayload>({
-    defaultValues: {
-      email: "admin@materialize.com",
-      password: "admin",
-    },
+    defaultValues: formDefaultValues,
     resolver: yupResolver(loginSchema),
   })
 

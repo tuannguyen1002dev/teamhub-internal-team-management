@@ -2,6 +2,6 @@ export interface InvitationFormInputProps {
   email: string
 }
 
-export const formDefaultValues = {
+export const formDefaultValues: InvitationFormInputProps = {
   email: ''
 }

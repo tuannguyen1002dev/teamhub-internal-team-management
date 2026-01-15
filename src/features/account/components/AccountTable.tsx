@@ -39,7 +39,7 @@ export default function InvitationTable() {
         </tr>
       </thead>
       <tbody>
-        {accountList.map((item: any) => (
+        {accountList.map((item: AccountTableProps) => (
           <InvitationRow key={item.id} item={item} onCopy={handleCopy} />
         ))}
       </tbody>
