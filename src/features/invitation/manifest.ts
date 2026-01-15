@@ -1,8 +1,8 @@
 import { InvitationView } from './components/_InvitationView'
 import { Mail } from 'lucide-react'
-import type FeatureManifest from '@/shared/types/FeatureManifest'
+import type { PrivateFeatureManifest } from '@/shared/types/FeatureManifest'
 
-export const invitationManifest: FeatureManifest = {
+export const invitationManifest: PrivateFeatureManifest = {
   id: 'invitation',
   title: 'Invitations',
   description: 'Manage Invitations',

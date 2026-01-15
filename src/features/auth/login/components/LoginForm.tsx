@@ -30,10 +30,7 @@ export function LoginForm() {
     try {
       await submit(data)
     } catch {
-      setError("email", {
-        type: "manual",
-        message: "Email or password is invalid",
-      })
+      setError("email", { type: "manual", message: "Email or password is invalid" })
     }
   }
 

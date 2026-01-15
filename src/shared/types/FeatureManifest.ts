@@ -2,19 +2,26 @@ import { LucideProps } from "lucide-react";
 import { ForwardRefExoticComponent, ReactNode, RefAttributes } from "react";
 import { PermissionsModel } from "@/types/UserType";
 
-export default interface FeatureManifest {
+interface CoreFeatureManifest {
   id: string;
   title: string;
   description: string;
+}
+
+export interface PublicFeatureManifest extends CoreFeatureManifest {
+  public: boolean;
+  page: () => Element | ReactNode
+  path: string
+}
+
+export interface PrivateFeatureManifest extends CoreFeatureManifest {
   icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>
   sidebar: SidebarConfig
-  panel: () => Element | ReactNode
   permissions: PermissionsModel
+  panel: () => Element | ReactNode
 }
 
 interface SidebarConfig {
   order: number
-  group?: 'management' | 'analytics' | 'settings' | 'dashboard'
+  group?: "management" | "analytics" | "settings" | "dashboard"
 }
-
-

@@ -1,15 +1,11 @@
-// features/auth/manifest.ts
-export const authManifest = {
+import type { PublicFeatureManifest } from '@/shared/types/FeatureManifest'
+import { LoginForm } from "@/features/auth/login/index"
+
+export const loginManifest: PublicFeatureManifest = {
   id: "login",
-  label: "Login",
-  route: "/login",
-
-  /** Visibility */
+  title: "login",
+  description: "login",
   public: true,
-
-  /** Sidebar behavior */
-  showInSidebar: false,
-
-  /** Ordering (irrelevant here, but keeps contract consistent) */
-  order: 0,
+  path: "login",
+  page: LoginForm
 };

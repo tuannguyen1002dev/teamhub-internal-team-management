@@ -28,10 +28,7 @@ export default function InvitationForm() {
     try {
       await createInvitation(data.email)
     } catch {
-      // setError("email", {
-      //   type: "manual",
-      //   message: "Email or password is invalid",
-      // })
+      // setError("email", { type: "manual", message: "Email or password is invalid", })
       showToast(`${errors.email?.message}`, "error")
     }
   }

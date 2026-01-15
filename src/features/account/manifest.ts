@@ -1,8 +1,8 @@
 import { AccountView } from './index'
 import { UsersRound } from 'lucide-react'
-import type FeatureManifest from '@/shared/types/FeatureManifest'
+import type { PrivateFeatureManifest } from '@/shared/types/FeatureManifest'
 
-export const accountManifest: FeatureManifest = {
+export const accountManifest: PrivateFeatureManifest = {
   id: 'account',
   title: 'Accounts',
   description: 'Manage Accounts',
