@@ -36,47 +36,13 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
-
 }
 
-// export async function POST(req: NextRequest) {
-//   try {
-//     const { email } = await req.json();
-//     if (!email || typeof email !== "string") {
-//       return NextResponse.json({ error: "Invalid email" }, { status: 400 });
-//     }
+export async function POST(req: NextRequest) {
+  try {
 
-//     // generate a token for the invitation (using email + timestamp hashed)
-//     const token = await bcrypt.hash(`${email}`, 10);
+  } catch (error) {
 
-//     //check if invitation already exists
-//     const existingInvitation = await prisma.invitation.findUnique({
-//       where: { email },
-//     });
-
-//     if (existingInvitation) {
-//       return NextResponse.json({ error: "Invitation already exists for this email" }, { status: 401 });
-//     }
-
-//     // create email content and send invitation //! THIS FEATURE REQUIRES A PAID RESEND PLAN TO WORK; currently disabled
-//     // const { data, error } = await resend.emails.send({
-//     //   from: 'Teamhub - Internal team management <teamhubApp@resend.dev>',
-//     //   to: [email],
-//     //   subject: `You're invited to TeamHub!`,
-//     //   react: EmailTemplate({ email: email, token: token }),
-//     // });
-
-//     const created = await prisma.invitation.create({
-//       data: {
-//         email: email,
-//         token: token,
-//         invLink: `${!getCurrentDomain() ? "localhost:3000" : "checkpoint"}/accept-invitation?token=${encodeURIComponent(token)}`,
-//       },
-//     });
-//     return NextResponse.json(created, { status: 201 });
-
-//   } catch (error) {
-//     return NextResponse.json({ error: "Failed to create invitation" }, { status: 500 });
-//   }
-// }
+  }
+}
 

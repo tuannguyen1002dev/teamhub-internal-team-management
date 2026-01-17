@@ -1,11 +1,11 @@
 import type { PublicFeatureManifest } from '@/shared/types/FeatureManifest'
-import { AcceptInvitationView } from "@/features/onboarding/accept-invitation/index"
+import { SetupAccountView } from "@/features/onboarding/setup-account/index"
 
-export const acceptInvitationManifest: PublicFeatureManifest = {
-  id: "accept-invitation",
-  title: "Accept Invitation",
-  description: "confirmation acceptant of new user",
+export const setupAccountManifest: PublicFeatureManifest = {
+  id: "setup-account",
+  title: "Setup Account",
+  description: "seup account by new user",
   public: true,
-  path: "accept-invitation",
-  page: AcceptInvitationView
+  path: "setup-account",
+  page: SetupAccountView
 };

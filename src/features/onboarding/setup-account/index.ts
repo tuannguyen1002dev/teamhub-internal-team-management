@@ -1,1 +1,1 @@
-export { AcceptInvitationView } from "./components/_AcceptInvitationView"
+export { SetupAccountView } from "./components/_SetupAccountView"
