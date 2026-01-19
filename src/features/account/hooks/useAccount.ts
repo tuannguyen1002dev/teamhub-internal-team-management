@@ -5,7 +5,7 @@ export function useAccount() {
   const [accountList, setAccountList] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
 
-  async function fetchAccounts() {
+  async function fetchAccountList() {
     setLoading(true)
     try {
       const res = await AccountAPI.list()
@@ -17,17 +17,17 @@ export function useAccount() {
 
   async function createAccount(email: string) {
     await AccountAPI.create(email)
-    await fetchAccounts()
+    await fetchAccountList()
   }
 
   useEffect(() => {
-    fetchAccounts()
+    fetchAccountList()
   }, [])
 
   return {
     accountList,
     loading,
     createAccount,
-    fetchAccounts,
+    fetchAccountList,
   }
 }

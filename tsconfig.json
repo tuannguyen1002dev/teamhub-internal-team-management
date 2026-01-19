@@ -37,6 +37,7 @@
     ".next/dev/types/**/*.ts"
 , "src/features/login/index.tx", "src/features/registry.tx", "src/app/(private)/dashboard/page.tsx", "src/app/(private)/dashboard/page.tsx"  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next"
   ]
 }
