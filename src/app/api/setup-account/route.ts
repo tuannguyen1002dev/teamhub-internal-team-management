@@ -1,7 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
 import { prisma } from '@/lib/prisma';
-// import { Resend } from 'resend'; //! THIS FEATURE REQUIRES A PAID RESEND PLAN TO WORK; currently disabled
-// const resend = new Resend("re_YEgEFwYL_5uBr8koJzAULpumLuugpAeTm"); //! THIS FEATURE REQUIRES A PAID RESEND PLAN TO WORK; currently disabled
 
 // GET all users
 export async function GET(req: NextRequest) {

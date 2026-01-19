@@ -44,24 +44,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // AuthInit()
 
-  }, [])
+  }, []);
 
   //!: Main auth functions
   async function AuthInit(): Promise<void> {
+
+    console.log("Auth Init called")
+
     if (AuthService.getAccessToken() && AuthService.getUserAccount() && authState.account !== AuthService.getUserAccount()) {
       adaptUtil({ 'isLoading': true })
       AuthService.authMe(AuthService.getAccessToken()).then((res) => {
-        console.log(res)
         adaptUtil({
           isLoading: true,
           account: res.data
         })
       }).catch((errRes) => {
-        console.log(errRes)
         AuthService.reAuthMe(AuthService.getAccessToken()).then((res) => {
           AuthService.setAccessToken(res.data.accessToken)
           AuthService.setRefAccessToken(res.data.accessToken)
-          AuthInit();
         }).catch((errRes) => {
           AuthService.clearAccessToken()
           AuthService.clearUserAccount()
@@ -79,7 +79,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       AuthService.clearUserAccount()
       adaptUtil({ account: null })
     }
-    AuthInit()
   }
 
   // TODO: 

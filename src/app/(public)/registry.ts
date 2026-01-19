@@ -1,6 +1,6 @@
 import { loginManifest } from "@/features/auth/login/manifest"
-import { acceptInvitationManifest } from "@/features/onboarding/accept-invitation/manifest"
-import { setupAccountManifest } from "@/features/onboarding/setup-account/manifest"
+import { acceptInvitationManifest } from "@/features/accept-invitation/manifest"
+import { setupAccountManifest } from "@/features/setup-account/manifest"
 
 const publicManifests = [
   loginManifest,

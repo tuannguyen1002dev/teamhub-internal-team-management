@@ -1,5 +1,5 @@
 import type { PublicFeatureManifest } from '@/shared/types/FeatureManifest'
-import { AcceptInvitationView } from "@/features/onboarding/accept-invitation/index"
+import { AcceptInvitationView } from "@/features/accept-invitation/index"
 
 export const acceptInvitationManifest: PublicFeatureManifest = {
   id: "accept-invitation",

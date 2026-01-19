@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from '@/lib/prisma';
-import EmailTemplate from '@/components/services/welcomEmail';
+import EmailTemplate from '@/components/services/invitationEmailTemplate';
 // import { Resend } from 'resend'; //! THIS FEATURE REQUIRES A PAID RESEND PLAN TO WORK; currently disabled
 import { getCurrentDomain } from "@/shared/utils/common";
 // const resend = new Resend("re_YEgEFwYL_5uBr8koJzAULpumLuugpAeTm"); //! THIS FEATURE REQUIRES A PAID RESEND PLAN TO WORK; currently disabled
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
       data: {
         email: email,
         token: token,
-        invLink: `${!getCurrentDomain() ? "localhost:3000" : "checkpoint"}/accept-invitation?token=${encodeURIComponent(token)}`,
+        invLink: `${!getCurrentDomain() ? "localhost:3000" : "checkpoint"}/setup-account?token=${encodeURIComponent(token)}`,
       },
     });
     return NextResponse.json(created, { status: 201 });

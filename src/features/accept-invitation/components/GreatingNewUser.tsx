@@ -1,5 +1,4 @@
-// features/invitation-acceptance/components/SuccessState.tsx
-export function SuccessState({
+export default function GreatingNewUser({
   email,
   onContinue,
 }: {

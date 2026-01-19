@@ -8,7 +8,7 @@ import { setupAccountSchema } from '../schemas/setup-account.schema';
 import { AccountDetailProps } from "@/shared/contracts/account/account-details.contract"
 import { setupAccountDefualtValues } from "../type"
 
-export function SetupAccountForm() {
+export default function SetupAccountForm({ validatedEmail }: { validatedEmail: string }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -17,7 +17,7 @@ export function SetupAccountForm() {
     handleSubmit,
     formState: { errors }
   } = useForm<AccountDetailProps>({
-    defaultValues: setupAccountDefualtValues,
+    defaultValues: { ...setupAccountDefualtValues, email: validatedEmail },
     mode: 'onChange',
     resolver: yupResolver(setupAccountSchema)
   })
@@ -48,10 +48,10 @@ export function SetupAccountForm() {
               data-error={errors.username ? "true" : "false"}
               data-success={field.value && !errors.username ? "true" : "false"}
             />
-            <button type="button" onClick={() => console.log("tuan")} className="absolute right-[5%] top-[30%] text-white/70 hover:text-white transition-all duration-500 z-10" aria-label=" Toggle password visibility">
-              <MessageSquareWarning size={16} color="orange" />
-            </button>
-            <span className={`absolute right-[5%] top-[30%] p-1 bg-orange-400 ${errors.username ? 'display-flex' : 'display-none'}`}>{`${errors.username?.type ? errors.username.message : ''}`}</span>
+            {/* <span className={`absolute right-[5%] top-[30%] ${errors.username ? 'display-none' : 'display-none'}`}>{`${errors.username?.type ? errors.username.message : ''}`}</span> */}
+            <div className={`${errors.username ?  'h-10' : 'h-0'} absolute bg-black/20 backdrop:backdrop-blur-2xl mt-3 p-3 rounded-md text-red-500 text-sm flex items-center gap-1 transition-all duration-500 overflow-hidden`}>
+              {errors.username?.message}
+            </div>
           </div>} />
         <Controller
           name="password"
@@ -103,6 +103,6 @@ export function SetupAccountForm() {
       <button className="submit-btn-primary col-span-2" type="submit">
         Setup Account
       </button>
-    </form>
+    </form >
   )
 }

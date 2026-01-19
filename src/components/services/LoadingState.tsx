@@ -1,8 +1,8 @@
 // features/invitation-acceptance/components/LoadingState.tsx
-export function LoadingState() {
+export default function LoadingState({ waitingMessages }: { waitingMessages: string }) {
   return (
     <div className="flex h-screen items-center justify-center text-gray-500">
-      Verifying your invitation...
+      {waitingMessages}...
     </div>
   )
 }

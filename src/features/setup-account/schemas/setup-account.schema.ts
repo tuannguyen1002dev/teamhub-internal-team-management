@@ -2,7 +2,7 @@ import * as yup from "yup"
 
 export const setupAccountSchema = yup.object().shape({
   email: yup.string().email().required(),
-  username: yup.string().required().matches(/^(?=.{4,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/, "incorrect username"),
+  username: yup.string().required().matches(/^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/, "incorrect username").min(4, "Username must be at least 4 characters").max(20, "Username must be at most 20 characters"),
   fullname: yup.string().required().matches(/^[\p{L}][\p{L}'\-\. ]{1,48}[\p{L}]$/u, "this is not an actual name for a person"),
   phone: yup.string().required(),
   address: yup.string().required(),

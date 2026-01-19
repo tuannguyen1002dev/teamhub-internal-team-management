@@ -1,10 +1,9 @@
-// features/invitation-acceptance/hooks/useAcceptInvitation.ts
 import { useEffect, useState } from 'react'
 import { verifyInvitation } from "../service"
 
 type Status = 'loading' | 'success' | 'error'
 
-export function useAcceptInvitation(token: string | null) {
+export function useValidateToken(token: string | null) {
   const [status, setStatus] = useState<Status>('loading')
   const [email, setEmail] = useState<string>('')
   const [message, setMessage] = useState<string>('')
@@ -16,7 +15,8 @@ export function useAcceptInvitation(token: string | null) {
       return
     }
     verifyInvitation(token).then((data) => {
-      setEmail(data.newBidingEmail)
+      console.log('Invitation verified data:', data)
+      setEmail(data.emailBasedToken)
       setMessage(data.message ?? 'Invitation verified successfully.')
       setStatus('success')
     }).catch((err) => {

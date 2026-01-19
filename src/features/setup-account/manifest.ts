@@ -1,5 +1,5 @@
 import type { PublicFeatureManifest } from '@/shared/types/FeatureManifest'
-import { SetupAccountView } from "@/features/onboarding/setup-account/index"
+import { SetupAccountView } from "@/features/setup-account/index"
 
 export const setupAccountManifest: PublicFeatureManifest = {
   id: "setup-account",
