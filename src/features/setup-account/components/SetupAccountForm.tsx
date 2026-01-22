@@ -36,8 +36,7 @@ export default function SetupAccountForm({ validatedEmail }: { validatedEmail: s
           render={({ field }) => <input disabled {...field} placeholder='email address'
             className="input-field-md-primary bg-white/30 cursor-not-allowed"
             data-error={errors.email ? "true" : "false"}
-            data-success={field.value !== "" && !errors.email ? "false" : "false"}
-          />} />
+            data-success={field.value !== "" && !errors.email ? "false" : "false"} />} />
         <Controller
           name="username"
           control={control}
@@ -46,11 +45,9 @@ export default function SetupAccountForm({ validatedEmail }: { validatedEmail: s
             <input {...field} placeholder='username'
               className="input-field-md-primary"
               data-error={errors.username ? "true" : "false"}
-              data-success={field.value && !errors.username ? "true" : "false"}
-            />
-            {/* <span className={`absolute right-[5%] top-[30%] ${errors.username ? 'display-none' : 'display-none'}`}>{`${errors.username?.type ? errors.username.message : ''}`}</span> */}
-            <div className={`${errors.username ?  'h-10' : 'h-0'} absolute bg-black/20 backdrop:backdrop-blur-2xl mt-3 p-3 rounded-md text-red-500 text-sm flex items-center gap-1 transition-all duration-500 overflow-hidden`}>
-              {errors.username?.message}
+              data-success={field.value && !errors.username ? "true" : "false"} />
+            <div className={`relative ${errors.username ? ' h-fit p-3 opacity-100 mt-3' : 'h-0 p-0 opacity-0 mt-0'} bg-black/20 backdrop:backdrop-blur-2xl rounded-md text-red-500 text-sm flex items-center gap-1 transition-all duration-500 ease-in-out overflow-hidden`}>
+              <span className={`${errors.username ? ' opacity-100' : 'opacity-0 '} transition-all duration-500 ease-in-out`}>{errors.username?.message}</span>
             </div>
           </div>} />
         <Controller
@@ -75,9 +72,23 @@ export default function SetupAccountForm({ validatedEmail }: { validatedEmail: s
               className="input-field-md-primary"
               data-error={errors.confirmPassword ? "true" : "false"}
               data-success={field.value && !errors.confirmPassword ? "true" : "false"} />
-            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-[5%] top-[30%] text-white/70 hover:text-white transition-all duration-500" aria-label=" Toggle password visibility">
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-[5%] top-[10%] text-white/70 hover:text-white transition-all duration-500" aria-label=" Toggle password visibility">
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
+            <div className="error-container">
+              <div className={` ${errors.password ? 'h-10 opacity-100 mt-3' : 'h-0 opacity-0 mt-0'} bg-black/20 backdrop:backdrop-blur-2xl text-sm flex items-center gap-1 transition-all duration-500 ease-in-out
+              ${errors.password && errors.confirmPassword ? 'rounded-tl-md rounded-tr-md p-3 pb-1' : 'rounded-md p-3'}
+              `}>
+                {/* <span className="opacity-0">hiddenTextforUI</span> */}
+                <span className={`absolute text-red-500 ${errors.password ? ' opacity-100' : 'opacity-0'} transition-all duration-500 ease-in-out`}>{errors.password?.message}</span>
+              </div>
+              <div className={` ${errors.confirmPassword ? ' h-10 opacity-100 mt-0' : 'h-0 opacity-0 mt-0'} bg-black/20 backdrop:backdrop-blur-2xl text-sm flex items-center gap-1 transition-all duration-500 ease-in-out
+              ${errors.confirmPassword && errors.password ? 'rounded-bl-md rounded-br-md p-3 pt-1' : 'rounded-md p-3'} 
+              `}>
+                {/* <span className="opacity-0">hiddenTextforUI</span> */}
+                <span className={`absolute text-red-500 ${errors.confirmPassword ? ' opacity-100' : 'opacity-0 '} transition-all duration-500 ease-in-out`}>{errors.confirmPassword?.message}</span>
+              </div>
+            </div>
           </div>} />
       </div>
       <div className="option-info-container flex flex-col gap-3">
@@ -88,8 +99,7 @@ export default function SetupAccountForm({ validatedEmail }: { validatedEmail: s
           render={({ field }) => <input {...field} placeholder='fullname (optional)'
             className="input-field-md-primary"
             data-error={errors.fullname ? "true" : "false"}
-            data-success={field.value && !errors.fullname ? "true" : "false"}
-          />} />
+            data-success={field.value && !errors.fullname ? "true" : "false"} />} />
         <Controller
           name="phone"
           control={control}
@@ -97,8 +107,7 @@ export default function SetupAccountForm({ validatedEmail }: { validatedEmail: s
           render={({ field }) => <input {...field} placeholder='phone number (optional)'
             className="input-field-md-primary"
             data-error={errors.phone ? "true" : "false"}
-            data-success={field.value && !errors.phone ? "true" : "false"}
-          />} />
+            data-success={field.value && !errors.phone ? "true" : "false"} />} />
       </div>
       <button className="submit-btn-primary col-span-2" type="submit">
         Setup Account
