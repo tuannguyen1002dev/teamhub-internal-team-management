@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
 import { useForm, Controller } from "react-hook-form"
-import { yupResolver } from "@hookform/resolvers/yup"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 import { loginSchema } from "../schemas/login.schema"
 import { useLogin } from "../hooks/useLogin"
@@ -20,7 +20,7 @@ export function LoginForm() {
     formState: { errors },
   } = useForm<LoginPayload>({
     defaultValues: formDefaultValues,
-    resolver: yupResolver(loginSchema),
+    resolver: zodResolver(loginSchema),
   })
 
   async function onSubmit(data: LoginPayload) {

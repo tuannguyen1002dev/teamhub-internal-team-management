@@ -1,6 +1,6 @@
-import * as yup from "yup"
+import { z } from "zod"
 
-export const loginSchema = yup.object({
-  email: yup.string().email().required(),
-  password: yup.string().min(5).required(),
+export const loginSchema = z.object({
+  email: z.email().min(1, "Email is required"),
+  password: z.string().min(1, "Password is required")
 })

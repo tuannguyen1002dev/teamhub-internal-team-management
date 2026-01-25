@@ -3,7 +3,7 @@ import { useForm, Controller, SubmitHandler, } from "react-hook-form"
 
 import { useInvitationContext } from "../hooks/InvitationContext";
 import { InvitationFormInputProps, formDefaultValues } from "@/shared/contracts/invitation/invitation-formInput.contract"
-import { yupResolver } from "@hookform/resolvers/yup"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { invitationSchema } from "../schemas/invitation.schema";
 import { useToast } from "@/contexts/alertToastContext";
 
@@ -19,7 +19,7 @@ export default function InvitationForm() {
     formState: { errors },
   } = useForm<InvitationFormInputProps>({
     defaultValues: formDefaultValues,
-    resolver: yupResolver(invitationSchema),
+    resolver: zodResolver(invitationSchema),
   })
 
   async function onSubmit(data: InvitationFormInputProps) {
