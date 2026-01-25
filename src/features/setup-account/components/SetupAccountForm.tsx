@@ -1,12 +1,11 @@
 
-import react from 'react'
+import react, { use } from 'react'
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Eye, EyeOff, MessageSquareWarning } from 'lucide-react';
-import { yupResolver } from '@hookform/resolvers/yup'
-import { setupAccountSchema } from '../schemas/setup-account.schema';
-import { AccountDetailProps } from "@/shared/contracts/account/account-details.contract"
-import { setupAccountDefualtValues } from "../type"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { setupAccountSchema, SetupAccountFormValues } from '../schemas/setup-account.schema';
+import { setupAccountDefualtValues } from '../type';
 
 export default function SetupAccountForm({ validatedEmail }: { validatedEmail: string }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,17 +13,30 @@ export default function SetupAccountForm({ validatedEmail }: { validatedEmail: s
   const {
     control,
     setError,
+    watch,
+    trigger,
     handleSubmit,
     formState: { errors }
-  } = useForm<AccountDetailProps>({
-    defaultValues: { ...setupAccountDefualtValues, email: validatedEmail },
+  } = useForm<SetupAccountFormValues>({
+    defaultValues: {
+      ...setupAccountDefualtValues,
+      email: validatedEmail,
+    },
     mode: 'onChange',
-    resolver: yupResolver(setupAccountSchema)
+    resolver: zodResolver(setupAccountSchema)
   })
+
+  useEffect(() => {
+    if (watch('password') && watch('confirmPassword') !== "")
+      trigger('confirmPassword')
+  }, [watch('password')])
 
   function onSubmit(event: any) {
     console.log("DATA SUBMIT: ", event);
   }
+
+  const classNameErrorContainer = "relative bg-black/20 backdrop:backdrop-blur-2xl rounded-md transition-all duration-500 ease-in-out";
+  const classNameErrorText = "transition-all duration-500 ease-in-out text-red-500 text-sm absolute transform translate-x-[-50%] translate-y-[-50%] left-[55%] top-[50%] w-full";
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-6 w-full flex flex-col gap-12">
@@ -46,8 +58,8 @@ export default function SetupAccountForm({ validatedEmail }: { validatedEmail: s
               className="input-field-md-primary"
               data-error={errors.username ? "true" : "false"}
               data-success={field.value && !errors.username ? "true" : "false"} />
-            <div className={`relative ${errors.username ? ' h-fit p-3 opacity-100 mt-3' : 'h-0 p-0 opacity-0 mt-0'} bg-black/20 backdrop:backdrop-blur-2xl rounded-md text-red-500 text-sm flex items-center gap-1 transition-all duration-500 ease-in-out overflow-hidden`}>
-              <span className={`${errors.username ? ' opacity-100' : 'opacity-0 '} transition-all duration-500 ease-in-out`}>{errors.username?.message}</span>
+            <div className={`error-container ${errors.username ? ' h-10 p-3 opacity-100 mt-3' : 'h-0 p-0 opacity-0 mt-0'}`}>
+              <span className={`error-text ${errors.username ? ' opacity-100' : 'opacity-0 '} `}>{errors.username?.message}</span>
             </div>
           </div>} />
         <Controller
@@ -59,7 +71,7 @@ export default function SetupAccountForm({ validatedEmail }: { validatedEmail: s
               className="input-field-md-primary"
               data-error={errors.password ? "true" : "false"}
               data-success={field.value && !errors.password ? "true" : "false"} />
-            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-[5%] top-[30%] text-white/70 hover:text-white transition-all duration-500" aria-label=" Toggle password visibility">
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute transform translate-x-[-50%] translate-y-[-50%] right-[5%] top-[50%] text-white/70 hover:text-white transition-all duration-500" aria-label=" Toggle password visibility">
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>} />
@@ -72,42 +84,53 @@ export default function SetupAccountForm({ validatedEmail }: { validatedEmail: s
               className="input-field-md-primary"
               data-error={errors.confirmPassword ? "true" : "false"}
               data-success={field.value && !errors.confirmPassword ? "true" : "false"} />
-            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-[5%] top-[10%] text-white/70 hover:text-white transition-all duration-500" aria-label=" Toggle password visibility">
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute transform translate-x-[-50%] translate-y-[-50%] right-[5%] top-[50%] text-white/70 hover:text-white transition-all duration-500" aria-label=" Toggle password visibility">
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
-            <div className="error-container">
-              <div className={` ${errors.password ? 'h-10 opacity-100 mt-3' : 'h-0 opacity-0 mt-0'} bg-black/20 backdrop:backdrop-blur-2xl text-sm flex items-center gap-1 transition-all duration-500 ease-in-out
-              ${errors.password && errors.confirmPassword ? 'rounded-tl-md rounded-tr-md p-3 pb-1' : 'rounded-md p-3'}
-              `}>
-                {/* <span className="opacity-0">hiddenTextforUI</span> */}
-                <span className={`absolute text-red-500 ${errors.password ? ' opacity-100' : 'opacity-0'} transition-all duration-500 ease-in-out`}>{errors.password?.message}</span>
-              </div>
-              <div className={` ${errors.confirmPassword ? ' h-10 opacity-100 mt-0' : 'h-0 opacity-0 mt-0'} bg-black/20 backdrop:backdrop-blur-2xl text-sm flex items-center gap-1 transition-all duration-500 ease-in-out
-              ${errors.confirmPassword && errors.password ? 'rounded-bl-md rounded-br-md p-3 pt-1' : 'rounded-md p-3'} 
-              `}>
-                {/* <span className="opacity-0">hiddenTextforUI</span> */}
-                <span className={`absolute text-red-500 ${errors.confirmPassword ? ' opacity-100' : 'opacity-0 '} transition-all duration-500 ease-in-out`}>{errors.confirmPassword?.message}</span>
-              </div>
-            </div>
           </div>} />
+        {/* ver 1 */}
+        <div className="error-container">
+          <div className={`relative flex flex-col gap-1 justify-center items-start error-container
+              ${errors.password && !errors.confirmPassword ? 'h-10 opacity-100 p-3'
+              : !errors.password && errors.confirmPassword ? 'h-10 opacity-100 p-3'
+                : errors.password && errors.confirmPassword ? 'h-16 opacity-100 p-3'
+                  : 'h-0 opacity-0 p-0'}`}>
+            <span className={`error-text ${errors.password && !errors.confirmPassword ? 'top-[50%]' : 'top-[35%]'}`}>
+              {errors.password && errors.password?.message}
+            </span>
+            <span className={`error-text ${!errors.password && errors.confirmPassword ? 'top-[50%]' : 'top-[65%]'}`}>
+              {errors.confirmPassword && errors.confirmPassword?.message}
+            </span>
+          </div>
+        </div>
       </div>
       <div className="option-info-container flex flex-col gap-3">
         <Controller
           name="fullname"
           control={control}
           rules={{ required: true }}
-          render={({ field }) => <input {...field} placeholder='fullname (optional)'
-            className="input-field-md-primary"
-            data-error={errors.fullname ? "true" : "false"}
-            data-success={field.value && !errors.fullname ? "true" : "false"} />} />
+          render={({ field }) => <div className="relative">
+            <input {...field} placeholder='fullname (optional)'
+              className="input-field-md-primary"
+              data-error={errors.fullname ? "true" : "false"}
+              data-success={field.value && !errors.fullname ? "true" : "false"} />
+            <div className={`error-container ${errors.fullname ? ' h-10 p-3 opacity-100 mt-3' : 'h-0 p-0 opacity-0 mt-0'}`}>
+              <span className={`error-text ${errors.fullname ? ' opacity-100' : 'opacity-0 '}`}>{errors.fullname?.message}</span>
+            </div>
+          </div>} />
         <Controller
           name="phone"
           control={control}
           rules={{ required: true }}
-          render={({ field }) => <input {...field} placeholder='phone number (optional)'
-            className="input-field-md-primary"
-            data-error={errors.phone ? "true" : "false"}
-            data-success={field.value && !errors.phone ? "true" : "false"} />} />
+          render={({ field }) => <div>
+            <input {...field} placeholder='phone number (optional)'
+              className="input-field-md-primary"
+              data-error={errors.phone ? "true" : "false"}
+              data-success={field.value && !errors.phone ? "true" : "false"} />
+            <div className={`error-container ${errors.phone ? ' h-10 p-3 opacity-100 mt-3' : 'h-0 p-0 opacity-0 mt-0'}`}>
+              <span className={`error-text ${errors.phone ? ' opacity-100' : 'opacity-0 '}`}>{errors.phone?.message}</span>
+            </div>
+          </div>} />
       </div>
       <button className="submit-btn-primary col-span-2" type="submit">
         Setup Account

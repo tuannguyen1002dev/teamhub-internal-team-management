@@ -1,6 +1,4 @@
-import { AccountDetailProps } from "@/shared/contracts/account/account-details.contract"
-
-export const setupAccountDefualtValues: AccountDetailProps = {
+export const setupAccountDefualtValues = {
   email: '',
   username: '',
   fullname: '',
