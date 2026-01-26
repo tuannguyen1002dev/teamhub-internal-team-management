@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from '@/lib/prisma';
-import EmailTemplate from '@/components/services/invitationEmailTemplate';
+import InvitationEmailTemplate from '@/features/invitation/templates/InvitationEmailTemplate';
 // import { Resend } from 'resend'; //! THIS FEATURE REQUIRES A PAID RESEND PLAN TO WORK; currently disabled
 import { getCurrentDomain } from "@/shared/utils/common";
 // const resend = new Resend("re_YEgEFwYL_5uBr8koJzAULpumLuugpAeTm"); //! THIS FEATURE REQUIRES A PAID RESEND PLAN TO WORK; currently disabled

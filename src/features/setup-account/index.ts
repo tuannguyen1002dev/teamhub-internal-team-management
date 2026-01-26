@@ -1,1 +1,1 @@
-export { SetupAccountView } from "./components/_SetupAccountView"
+export { SetupAccountView } from "./components/SetupAccountView"

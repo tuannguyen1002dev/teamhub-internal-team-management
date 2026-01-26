@@ -5,7 +5,7 @@ import { useInvitationContext } from "../hooks/InvitationContext";
 import { InvitationFormInputProps, formDefaultValues } from "@/shared/contracts/invitation/invitation-formInput.contract"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { invitationSchema } from "../schemas/invitation.schema";
-import { useToast } from "@/contexts/alertToastContext";
+import { useToast } from "@/contexts/AlertToastContext";
 
 
 export default function InvitationForm() {

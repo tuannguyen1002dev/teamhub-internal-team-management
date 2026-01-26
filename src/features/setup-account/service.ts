@@ -1,5 +1,5 @@
 import Api from '@/shared/utils/api'
-import { phoneRegionResponse } from './type'
+import { phoneRegionResponse } from './types'
 
 export async function verifyInvitation(token: string) {
   const res = await Api.get(`/api/accept-invitation?token=${encodeURIComponent(token)}`, {

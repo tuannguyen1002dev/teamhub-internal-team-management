@@ -1,1 +1,1 @@
-export { InvitationView } from './components/_InvitationView'
+export { InvitationView } from './components/InvitationView'

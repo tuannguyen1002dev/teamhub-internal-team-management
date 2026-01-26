@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import Sidebar from '@/components/sidebar'
+import Sidebar from '@/components/Sidebar'
 import { ChevronLeft, User } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 import { PageTitleProvider } from '@/contexts/PageTitleProvider'

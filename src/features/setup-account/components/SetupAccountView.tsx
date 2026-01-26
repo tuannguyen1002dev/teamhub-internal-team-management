@@ -3,8 +3,8 @@ import SetupAccountForm from "./SetupAccountForm"
 import { useValidateToken } from '../hooks/useValidateToken';
 
 import { useSearchParams, useRouter } from 'next/navigation'
-import LoadingState from '@/components/services/LoadingState'
-import ErrorState from '@/components/services/ErrorState'
+import LoadingState from '@/components/basics/LoadingState'
+import ErrorState from '@/components/basics/ErrorState'
 import { ShieldX } from 'lucide-react'
 
 export function SetupAccountView() {

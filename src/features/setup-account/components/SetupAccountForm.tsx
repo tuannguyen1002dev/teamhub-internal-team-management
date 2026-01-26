@@ -6,7 +6,7 @@ import { usePhoneRegions } from '../hooks/useValidateToken';
 import { Eye, EyeOff, MessageSquareWarning, ChevronDown } from 'lucide-react';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { setupAccountSchema, SetupAccountFormValues } from '../schemas/setup-account.schema';
-import { setupAccountDefualtValues } from '../type';
+import { setupAccountDefualtValues } from '../types';
 
 export default function SetupAccountForm({ validatedEmail }: { validatedEmail: string }) {
   const [showPassword, setShowPassword] = useState(false);

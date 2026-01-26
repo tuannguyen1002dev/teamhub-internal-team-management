@@ -2,8 +2,8 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useValidateToken } from '../hooks/useValidateToken';
-import LoadingState from '@/components/services/LoadingState'
-import ErrorState from '@/components/services/ErrorState'
+import LoadingState from '@/components/basics/LoadingState'
+import ErrorState from '@/components/basics/ErrorState'
 import GreatingNewUser from './GreatingNewUser'
 import { ShieldX } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthProvider'
