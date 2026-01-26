@@ -5,6 +5,7 @@ import Sidebar from '@/components/Sidebar'
 import { ChevronLeft, User } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 import { PageTitleProvider } from '@/contexts/PageTitleProvider'
+import { useAuth } from '@/contexts/AuthProvider'
 import { getSidebarItems } from './sidebarProjection'
 
 // Define reusable animation classes
@@ -13,6 +14,7 @@ const animationClasses = "transition-all duration-500 ease-in-out";
 export default function DashboardLayout({ children, }: { children: React.ReactNode }) {
 
   const router = useRouter()
+  const auth = useAuth()
   const pathname = usePathname();
   const [sideBarState, setSideBarState] = useState<boolean>(false)
 
@@ -35,14 +37,14 @@ export default function DashboardLayout({ children, }: { children: React.ReactNo
               </button>
             </div>
           </div>
-          <Sidebar sideBarState={sideBarState} registryItems={getSidebarItems()} />
+          <Sidebar sideBarState={sideBarState} registryItems={getSidebarItems(auth.account?.role)} />
         </div>
         <div className={`flex bg-black/30 backdrop-blur-md rounded-3xl ${animationClasses} h-[100%] ${sideBarState ? 'w-[90%]' : 'w-[80%]'}`}>
           <div className="flex flex-col w-full h-full">
             <div className="flex flex-row justify-between items-center px-6 py-3 rounded-t-3xl border-b border-white/20">
               <span className="text-2xl font-bold text-white">
               </span>
-              <button className={` ${animationClasses} border border-white/30 rounded-xl p-2 text-white hover:bg-gray-700`} onClick={() => router.push('/login')}>
+              <button className={` ${animationClasses} border border-white/30 rounded-xl p-2 text-white hover:bg-gray-700`} onClick={() => auth.logout()}>
                 <User />
               </button>
             </div>

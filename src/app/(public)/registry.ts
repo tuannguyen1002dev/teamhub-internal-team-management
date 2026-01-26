@@ -1,4 +1,4 @@
-import { loginManifest } from "@/features/auth/login/manifest"
+import { loginManifest } from "@/features/auth/manifest"
 import { acceptInvitationManifest } from "@/features/accept-invitation/manifest"
 import { setupAccountManifest } from "@/features/setup-account/manifest"
 

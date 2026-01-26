@@ -45,6 +45,7 @@ enum GenderOption {
 model Invitation {
   id         String           @id @default(cuid())
   email      String           @unique
+  role       AccountRole      @default(USER)
   token      String           @unique
   invLink    String           @unique
   status     InvitationStatus @default(PENDING)
@@ -56,7 +57,7 @@ model Invitation {
 enum InvitationStatus {
   PENDING
   ACCEPTED
-  EXPRIRED
+  EXPIRED
 }
 
 // !___________________________________________________________________

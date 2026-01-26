@@ -17,29 +17,19 @@ export type LoginParams = {
 }
 
 export type AuthValueType = {
-
-  //!: main auth params
   account: JwtPayload | null
   isAuthenticated: boolean
   isLoading: boolean
-  setAuthState: (
-    account: JwtPayload | null,
-    isLoading: boolean,
-    isAuthenticated: boolean
-  ) => void;
-
-  //! Login / Logout
-  login: (params: LoginParams, errorCallback?: ErrCallbackType) => void
-  logout: () => void
-
-  //! CALS
-  hasRole: (roles: AccountType['role']) => boolean
-  hasPermission: (permissions: string[]) => boolean
-  canAccess: (roles?: AccountType['role'], permissions?: string[]) => boolean
+  setAuthState: (updates: Partial<{ account: JwtPayload | null, isLoading: boolean, isAuthenticated: boolean }>) => Promise<void>;
+  login: (params: LoginParams) => Promise<void>
+  logout: () => Promise<void>
+  hasRole: (roles: string | string[]) => boolean
+  hasPermission: (permissions: string | string[]) => boolean
+  canAccess: (roles?: string | string[], permissions?: string | string[]) => boolean
   fallback: string
 }
 
-type SafeAccountFields = 'id' | 'email' | 'username' | 'role' | 'permissions' | 'fullName';
+type SafeAccountFields = 'id' | 'email' | 'username' | 'role' | 'permissions' | 'fullname';
 
 export interface JwtPayload extends Pick<AccountType, SafeAccountFields> {
   iat?: number;

@@ -1,62 +1,44 @@
 import { NextResponse, NextRequest } from "next/server";
-import bcrypt from "bcryptjs";
-import { prisma } from '@/lib/prisma';
-import InvitationEmailTemplate from '@/features/invitation/templates/InvitationEmailTemplate';
-// import { Resend } from 'resend'; //! THIS FEATURE REQUIRES A PAID RESEND PLAN TO WORK; currently disabled
-import { getCurrentDomain } from "@/shared/utils/common";
-// const resend = new Resend("re_YEgEFwYL_5uBr8koJzAULpumLuugpAeTm"); //! THIS FEATURE REQUIRES A PAID RESEND PLAN TO WORK; currently disabled
+import { InvitationService } from "@/features/invitation/application/invitation.service";
+import { cookies } from "next/headers";
+import { verifyToken } from "@/infrastructure/auth/jwt";
+import { RBAC } from "@/infrastructure/auth/rbac";
 
-// GET all users
 export async function GET(req: NextRequest) {
-  const { searchParams, search } = req.nextUrl;
-  const receivedToken = searchParams.get('token');
-  // send all exsisting invitations
+  const cookieStore = await cookies();
+  const token = cookieStore.get('accessToken')?.value;
+  const user = token ? await verifyToken(token) : null;
+
+  if (!user || !RBAC.isAdmin(user)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   try {
-    const invitations = await prisma.invitation.findMany();
+    const invitations = await InvitationService.list();
     return NextResponse.json(invitations);
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch invitations" }, { status: 500 });
   }
-
 }
 
 export async function POST(req: NextRequest) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('accessToken')?.value;
+  const user = token ? await verifyToken(token) : null;
+
+  if (!user || !RBAC.isAdmin(user)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   try {
-    const { email } = await req.json();
-    if (!email || typeof email !== "string") {
-      return NextResponse.json({ error: "Invalid email" }, { status: 400 });
-    }
-
-    // generate a token for the invitation (using email + timestamp hashed)
-    const token = await bcrypt.hash(`${email}`, 10);
-
-    //check if invitation already exists
-    const existingInvitation = await prisma.invitation.findUnique({
-      where: { email },
-    });
-
-    if (existingInvitation) {
-      return NextResponse.json({ error: "Invitation already exists for this email" }, { status: 401 });
-    }
-
-    // create email content and send invitation //! THIS FEATURE REQUIRES A PAID RESEND PLAN TO WORK; currently disabled
-    // const { data, error } = await resend.emails.send({
-    //   from: 'Teamhub - Internal team management <teamhubApp@resend.dev>',
-    //   to: [email],
-    //   subject: `You're invited to TeamHub!`,
-    //   react: EmailTemplate({ email: email, token: token }),
-    // });
-
-    const created = await prisma.invitation.create({
-      data: {
-        email: email,
-        token: token,
-        invLink: `${!getCurrentDomain() ? "localhost:3000" : "checkpoint"}/accept-invitation?token=${encodeURIComponent(token)}`,
-      },
-    });
+    const { email, role } = await req.json();
+    const created = await InvitationService.create({ email, role });
     return NextResponse.json(created, { status: 201 });
+  } catch (error: any) {
+    if (error.message === "INVALID_EMAIL") return NextResponse.json({ error: "Invalid email" }, { status: 400 });
+    if (error.message === "ALREADY_REGISTERED") return NextResponse.json({ error: "User already registered" }, { status: 409 });
 
-  } catch (error) {
+    console.error('Invitation error:', error);
     return NextResponse.json({ error: "Failed to create invitation" }, { status: 500 });
   }
 }

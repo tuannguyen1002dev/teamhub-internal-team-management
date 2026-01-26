@@ -1,29 +1,17 @@
 // ** Lib & file
-import axios, { CancelToken } from "axios";
-// import { API_URL } from "@/config/setting";
+import axios from "axios";
 
-// import { ErrCallbackType } from 'src/context/types';
-import { AuthService } from "../services/auth.services";
+const isServer = typeof window === 'undefined';
+const API_URL = isServer ? 'http://localhost:3000' : '';
 
-const defaultOptions = {};
-
-// **  Embeded Token into Authorization field in HTTP's header
-
-export const generateToken = () => ({
-  Authorization: `Bearer ${AuthService.getAccessToken()}`,
-});
-
-const API_URL = "http://localhost:3000";
+const defaultOptions = {
+  withCredentials: true, // Necessary if we call cross-origin, good practice for cookies
+};
 
 function getApi(path: string, options: any = {}) {
-  return axios.get(`${API_URL}/${path.replace(/ ^\//, "")}`, {
+  return axios.get(`${API_URL}/${path.replace(/^\//, "")}`, {
     ...defaultOptions,
     ...options,
-    headers: {
-      ...options.headers,
-      ...generateToken(),
-    },
-    cancelToken: options.cancelToken,
   });
 }
 
@@ -31,10 +19,6 @@ function postApi(path: string, data?: any, options: any = {}) {
   return axios.post(`${API_URL}/${path.replace(/^\//, "")}`, data, {
     ...defaultOptions,
     ...options,
-    headers: {
-      ...options.headers,
-      ...generateToken(),
-    },
   });
 }
 
@@ -42,10 +26,6 @@ function putApi(path: string, data: any, options: any = {}) {
   return axios.put(`${API_URL}/${path.replace(/^\//, "")}`, data, {
     ...defaultOptions,
     ...options,
-    headers: {
-      ...options.headers,
-      ...generateToken(),
-    },
   });
 }
 
@@ -53,10 +33,6 @@ function deleteApi(path: string, options: any = {}) {
   return axios.delete(`${API_URL}/${path.replace(/^\//, "")}`, {
     ...defaultOptions,
     ...options,
-    headers: {
-      ...options.headers,
-      ...generateToken(),
-    },
   });
 }
 

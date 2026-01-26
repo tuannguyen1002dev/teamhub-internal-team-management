@@ -1,23 +1,21 @@
-type AccountRole = 'sudo' | 'admin' | 'manager' | 'operator' | 'user'
+export type AccountRole = 'ADMIN' | 'USER' | 'OPERATOR'
 
-export type AccountType = {
-  id: string
-  username: string;
+export interface AccountType {
+  id: string;
   email: string;
-  dateofbirth: Date;
-  passwords: string;
-  fullName: string;
-  phoneNumber: string;
-  address: string;
+  fullname?: string | null;
+  username?: string | null;
+  role: AccountRole;
+  permissions: string[];
   createdAt: Date;
   updatedAt: Date;
-  role: AccountRole
-  permissions?: PermissionsModel
+  dateofbirth?: Date | null;
+  phone?: string | null;
+  address?: string | null;
 }
 
-type PermissionAction = 'read' | 'write' | 'update' | 'delete' | 'manage'
-type PermissionResource = 'sudo' | 'admin' | 'manager' | 'operator' | 'user'
-
+export type PermissionAction = 'read' | 'write' | 'update' | 'delete' | 'manage'
+export type PermissionResource = 'sudo' | 'admin' | 'manager' | 'operator' | 'user'
 
 export type PermissionsModel = {
   [R in PermissionResource]?: PermissionAction[]

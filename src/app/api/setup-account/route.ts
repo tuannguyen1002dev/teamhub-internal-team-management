@@ -1,43 +1,38 @@
 import { NextResponse, NextRequest } from "next/server";
-import { prisma } from '@/lib/prisma';
+import { InvitationService } from "@/features/invitation/application/invitation.service";
+import { AccountService } from "@/features/account/application/account.service";
 
-// GET all users
 export async function GET(req: NextRequest) {
-  const { searchParams, search } = req.nextUrl;
-  const receivedToken = searchParams.get('token');
+  const { searchParams } = req.nextUrl;
+  const token = searchParams.get('token');
 
   try {
-    // TODO: Check if URL is exsists 
-    if (!receivedToken) {
-      return NextResponse.json({ error: 'Missing token from URL' }, { status: 400 });
+    const result = await InvitationService.verify(token || "");
+    return NextResponse.json({ email: result.email, role: result.role, status: 'VALID' }, { status: 200 });
+  } catch (error: any) {
+    if (error.message === "ALREADY_ACCEPTED") {
+      return NextResponse.json({ status: 'ALREADY_ACCEPTED' }, { status: 200 });
     }
 
-    // TODO: check if the invitation exists/legit
-    const isExsists = await prisma.invitation.findFirst({
-      where: { token: receivedToken },
-    });
-    const emailBasedToken = isExsists?.email
-    if (!isExsists) {
-      return NextResponse.json({ error: 'Invitation not found' }, { status: 401 });
-    }
-
-    // TODO: check if expired (72 hours)
-    const isExpired = (new Date().getTime() - isExsists.createdAt.getTime()) / (1000 * 60 * 60) >= 72;
-    if (isExpired) {
-      return NextResponse.json({ error: 'Invitation has expired' }, { status: 402 });
-    }
-
-    return NextResponse.json({ emailBasedToken, message: "validated URL" }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Not Found' }, { status: 404 });
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
+    const payload = await req.json();
+    const result = await AccountService.create(payload);
+    return NextResponse.json(result, { status: 201 });
+  } catch (error: any) {
+    if (error.message === "ALREADY_ACCEPTED") {
+      return NextResponse.json({ error: "Account already set up. Please log in." }, { status: 400 });
+    }
+    if (error.message === "EMAIL_EXISTS") {
+      return NextResponse.json({ error: "Email already registered" }, { status: 409 });
+    }
 
-  } catch (error) {
-
+    console.error('Setup account creation failed:', error);
+    return NextResponse.json({ error: "Invalid request or expired invitation" }, { status: 400 });
   }
 }
 

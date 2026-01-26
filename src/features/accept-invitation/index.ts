@@ -1,1 +1,1 @@
-export { AcceptInvitationView } from "./components/AcceptInvitationView"
+export { AcceptInvitationView } from "./ui/components/AcceptInvitationView"

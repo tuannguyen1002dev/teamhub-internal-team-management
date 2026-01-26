@@ -1,31 +1,13 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { AccountType } from '@/types/UserType'
-import { LoginParams, ErrCallbackType } from '@/types/Auth'
-import { usePathname, useRouter } from 'next/navigation'
-import { AuthValueType, JwtPayload } from '@/types/Auth'
-import Api from '@/shared/utils/api'
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
+import { AuthValueType, JwtPayload, LoginParams } from '@/types/Auth'
 import { AuthService } from '@/shared/services/auth.services'
 
-
-const defaultProvider: AuthValueType = {
-  account: null,
-  isAuthenticated: false,
-  isLoading: false,
-  setAuthState: () => Promise.resolve(),
-  login: () => Promise.resolve(),
-  logout: () => Promise.resolve(),
-  hasRole: () => false,
-  hasPermission: () => false,
-  canAccess: () => false,
-  fallback: '/login',
-}
-
-const AuthContext = createContext(defaultProvider);
+const AuthContext = createContext<AuthValueType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const auth = useAuth()
   const router = useRouter()
   const [authState, setAuthState] = useState<{
     account: JwtPayload | null;
@@ -37,96 +19,83 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isAuthenticated: false
   });
 
-  function adaptUtil(updates: Partial<AuthValueType> | { [K in keyof AuthValueType]?: AuthValueType[K] }) {
-    return setAuthState(prev => ({ ...prev, ...updates }));
-  }
-
-  useEffect(() => {
-    // AuthInit()
-
+  const refreshAuth = useCallback(async () => {
+    setAuthState(prev => ({ ...prev, isLoading: true }));
+    try {
+      const res = await AuthService.authMe();
+      setAuthState({
+        account: res.data.user,
+        isAuthenticated: true,
+        isLoading: false
+      });
+    } catch (error) {
+      setAuthState({
+        account: null,
+        isAuthenticated: false,
+        isLoading: false
+      });
+    }
   }, []);
 
-  //!: Main auth functions
-  async function AuthInit(): Promise<void> {
+  useEffect(() => {
+    refreshAuth();
+  }, [refreshAuth]);
 
-    console.log("Auth Init called")
-
-    if (AuthService.getAccessToken() && AuthService.getUserAccount() && authState.account !== AuthService.getUserAccount()) {
-      adaptUtil({ 'isLoading': true })
-      AuthService.authMe(AuthService.getAccessToken()).then((res) => {
-        adaptUtil({
-          isLoading: true,
-          account: res.data
-        })
-      }).catch((errRes) => {
-        AuthService.reAuthMe(AuthService.getAccessToken()).then((res) => {
-          AuthService.setAccessToken(res.data.accessToken)
-          AuthService.setRefAccessToken(res.data.accessToken)
-        }).catch((errRes) => {
-          AuthService.clearAccessToken()
-          AuthService.clearUserAccount()
-          adaptUtil({
-            account: null,
-            isLoading: true
-          })
-          router.push(auth.fallback)
-        })
-      })
-
-
-    } else {
-      AuthService.clearAccessToken()
-      AuthService.clearUserAccount()
-      adaptUtil({ account: null })
+  const login = async (params: LoginParams) => {
+    try {
+      await AuthService.logMeIn(params);
+      await refreshAuth();
+    } catch (error: any) {
+      const message = error.response?.data?.error || 'Login failed';
+      throw new Error(message);
     }
-  }
+  };
 
-  // TODO: 
-  function HandleLogin(params: LoginParams, errorCallback?: ErrCallbackType) {
-    AuthService.logMeIn(params).then((res) => {
-      console.log(res.data)
-    }).catch((errRes) => {
-      console.log(errRes.data)
-    })
-  }
-
-  const HandleLogout = () => {
-
-  }
-
-  const hasRole = (roles: AccountType['role']) => {
-    if (!authState.account) return false
-    return roles.includes(authState.account.role)
-  }
-
-  const hasPermission = (permissions: string[]) => {
-    if (!authState.account || !authState.account.permissions) return false
-    const accountPermissions: any = values.account?.permissions ?? [];
-    return permissions.every(permission =>
-      accountPermissions.includes(permission)
-    );
-  }
-
-  const canAccess = (roles?: AccountType['role'], permissions?: string[]) => {
-    if (roles && permissions && authState.account?.role && authState.account?.permissions) {
-      roles.includes(authState.account.role)
-      const accountPermissions: any = values.account?.permissions ?? [];
-      return accountPermissions.every((permission: string[]) => accountPermissions?.includes(permission));
+  const logout = async () => {
+    try {
+      await AuthService.logout();
+      setAuthState({
+        account: null,
+        isAuthenticated: false,
+        isLoading: false
+      });
+      router.push('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
     }
-  }
+  };
 
-  const values = {
+  const hasRole = (roles: string | string[]) => {
+    if (!authState.account) return false;
+    const rolesArray = Array.isArray(roles) ? roles : [roles];
+    return rolesArray.includes(authState.account.role);
+  };
+
+  const hasPermission = (permissions: string | string[]) => {
+    if (!authState.account || !authState.account.permissions) return false;
+    const permsArray = Array.isArray(permissions) ? permissions : [permissions];
+    return permsArray.every(p => authState.account?.permissions.includes(p));
+  };
+
+  const values: AuthValueType = {
     account: authState.account,
     isAuthenticated: authState.isAuthenticated,
     isLoading: authState.isLoading,
-    setAuthState: () => adaptUtil,
-    login: HandleLogin,
-    logout: HandleLogout,
-    hasRole: () => false,
-    hasPermission: () => false,
-    canAccess: () => false,
+    login,
+    logout,
+    hasRole,
+    hasPermission,
+    canAccess: (roles, permissions) => {
+      if (!roles && !permissions) return true;
+      const roleMatch = roles ? hasRole(roles) : true;
+      const permMatch = permissions ? hasPermission(permissions) : true;
+      return roleMatch && permMatch;
+    },
     fallback: '/login',
-  }
+    setAuthState: async (updates) => {
+      setAuthState(prev => ({ ...prev, ...updates }));
+    }
+  };
 
   return <AuthContext.Provider value={values}>
     {children}

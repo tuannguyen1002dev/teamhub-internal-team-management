@@ -1,4 +1,4 @@
-import { InvitationView } from './components/InvitationView'
+import { InvitationView } from './ui/components/InvitationView'
 import { Mail } from 'lucide-react'
 import type { PrivateFeatureManifest } from '@/shared/types/FeatureManifest'
 

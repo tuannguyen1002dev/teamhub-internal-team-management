@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { DialogProvider } from "@/contexts/DialogProvider";
 import { AuthProvider } from "@/contexts/AuthProvider";
-import BGAnimation from "@/components/basics/bgAnimation";
+import BGAnimation from "@/shared/ui/BgAnimation";
 import { ToastProvider } from "@/contexts/AlertToastContext";
 import { FeattureAlrtProvider } from "@/contexts/FeaturesAlert";
 
