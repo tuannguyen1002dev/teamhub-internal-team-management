@@ -1,14 +1,39 @@
 
 import react, { use } from 'react'
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { Eye, EyeOff, MessageSquareWarning } from 'lucide-react';
+import { usePhoneRegions } from '../hooks/useValidateToken';
+import { Eye, EyeOff, MessageSquareWarning, ChevronDown } from 'lucide-react';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { setupAccountSchema, SetupAccountFormValues } from '../schemas/setup-account.schema';
 import { setupAccountDefualtValues } from '../type';
 
 export default function SetupAccountForm({ validatedEmail }: { validatedEmail: string }) {
   const [showPassword, setShowPassword] = useState(false);
+  const { regions, loading: loadingRegions } = usePhoneRegions()
+  const [selectedRegion, setSelectedRegion] = useState<any>(null)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (regions.length > 0 && !selectedRegion) {
+      const defaultRegion = regions.find(r => r.iso2 === 'VN') || regions[0]
+      setSelectedRegion(defaultRegion)
+    }
+  }, [regions])
+
 
   const {
     control,
@@ -122,15 +147,58 @@ export default function SetupAccountForm({ validatedEmail }: { validatedEmail: s
           name="phone"
           control={control}
           rules={{ required: true }}
-          render={({ field }) => <div>
-            <input {...field} placeholder='phone number (optional)'
-              className="input-field-md-primary"
-              data-error={errors.phone ? "true" : "false"}
-              data-success={field.value && !errors.phone ? "true" : "false"} />
-            <div className={`error-container ${errors.phone ? ' h-10 p-3 opacity-100 mt-3' : 'h-0 p-0 opacity-0 mt-0'}`}>
-              <span className={`error-text ${errors.phone ? ' opacity-100' : 'opacity-0 '}`}>{errors.phone?.message}</span>
-            </div>
-          </div>} />
+          render={({ field }) => {
+            return (
+              <div className='relative'>
+                <div className="flex gap-2 items-center">
+                  <div className="relative" ref={dropdownRef}>
+                    <button
+                      type="button"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className="input-field-md-primary w-[100px] flex items-center justify-between px-3"
+                    >
+                      <span className='text-xl'>{selectedRegion?.flag}</span>
+                      <ChevronDown size={16} className={`transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {isDropdownOpen && (
+                      <div className="absolute top-[110%] left-0 w-[300px] max-h-[300px] overflow-y-auto bg-black/80 backdrop-blur-xl border border-white/10 rounded-lg p-2 z-50 flex flex-col gap-1 shadow-xl animate-dropdown-open custom-scrollbar">
+                        {loadingRegions ? (
+                          <div className="p-2 text-white/50 text-center text-sm">Loading regions...</div>
+                        ) : regions.map((region: any, index: number) => (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => {
+                              setSelectedRegion(region)
+                              setIsDropdownOpen(false)
+                            }}
+                            className="flex items-center gap-3 p-2 hover:bg-white/10 rounded-md transition-colors text-left"
+                          >
+                            <span className="text-xl w-8">{region.flag}</span>
+                            <span className="text-white/70 text-sm flex-1">{region.country}</span>
+                            <span className="text-white/50 text-xs">{region.dialCode}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      {...field}
+                      placeholder='phone number (optional)'
+                      className="input-field-md-primary w-full"
+                      data-error={errors.phone ? "true" : "false"}
+                      data-success={field.value && !errors.phone ? "true" : "false"}
+                    />
+                  </div>
+                </div>
+                <div className={`error-container ${errors.phone ? ' h-10 p-3 opacity-100 mt-3' : 'h-0 p-0 opacity-0 mt-0'}`}>
+                  <span className={`error-text ${errors.phone ? ' opacity-100' : 'opacity-0 '}`}>{errors.phone?.message}</span>
+                </div>
+              </div>
+            )
+          }}
+        />
       </div>
       <button className="submit-btn-primary col-span-2" type="submit">
         Setup Account

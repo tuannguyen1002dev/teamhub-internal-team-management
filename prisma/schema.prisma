@@ -58,3 +58,12 @@ enum InvitationStatus {
   ACCEPTED
   EXPRIRED
 }
+
+// !___________________________________________________________________
+model PhoneRegion {
+  id        Int     @id @default(autoincrement())
+  country   String  @unique
+  iso2      String  @unique
+  dialCode  String
+  flag      String?
+}

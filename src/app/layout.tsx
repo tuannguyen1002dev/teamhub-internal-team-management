@@ -7,7 +7,6 @@ import BGAnimation from "@/components/basics/bgAnimation";
 import { ToastProvider } from "@/contexts/alertToastContext";
 import { FeattureAlrtProvider } from "@/contexts/featuresAlert";
 
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

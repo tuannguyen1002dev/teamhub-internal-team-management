@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { verifyInvitation } from "../service"
+import { verifyInvitation, phoneRegion } from "../service"
 
 type Status = 'loading' | 'success' | 'error'
 
@@ -19,6 +19,7 @@ export function useValidateToken(token: string | null) {
       setEmail(data.emailBasedToken)
       setMessage(data.message ?? 'Invitation verified successfully.')
       setStatus('success')
+
     }).catch((err) => {
       setStatus('error')
       setMessage(err?.response?.data?.error ?? 'Something went wrong.')
@@ -26,4 +27,22 @@ export function useValidateToken(token: string | null) {
   }, [token])
 
   return { status, email, message }
+}
+
+export function usePhoneRegions() {
+  const [regions, setRegions] = useState<any[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string>('')
+
+  useEffect(() => {
+    phoneRegion().then((res) => {
+      setRegions(res.regionsList)
+      setLoading(false)
+    }).catch((err) => {
+      setError(err?.response?.data?.error ?? 'Failed to fetch phone regions.')
+      setLoading(false)
+    })
+  }, [])
+
+  return { regions, loading, error }
 }
