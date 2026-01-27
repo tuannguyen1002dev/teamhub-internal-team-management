@@ -1,7 +1,7 @@
 'use client'
 
 import { Copy, Check } from "lucide-react";
-import { useFeatureAlert } from "@/contexts/FeaturesAlert";
+import { useFeatureAlert } from "@/contexts/featuresAlert";
 import clipboard from "@/shared/utils/clipboard";
 import formatDateTime from '@/shared/utils/formatDateTime';
 import { InvitationTableProps } from "@/shared/contracts/invitation/invitation-table.contract"
