@@ -5,7 +5,7 @@ import { DialogProvider } from "@/contexts/DialogProvider";
 import { AuthProvider } from "@/contexts/AuthProvider";
 import BGAnimation from "@/components/basics/bgAnimation";
 import { ToastProvider } from "@/contexts/AlertToastContext";
-import { FeattureAlrtProvider } from "@/contexts/FeaturesAlert";
+import { FeatureAlertProvider } from "@/contexts/FeaturesAlert";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,12 +28,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
           <ToastProvider>
-            <FeattureAlrtProvider>
+            <FeatureAlertProvider>
               <DialogProvider>
                 <BGAnimation />
                 {children}
               </DialogProvider>
-            </FeattureAlrtProvider>
+            </FeatureAlertProvider>
           </ToastProvider>
         </AuthProvider>
       </body>

@@ -16,12 +16,12 @@ type Toast = {
   isExiting: boolean;
 };
 
-const FeatureAlrtContext = createContext<FeatureAlerValue | undefined>(undefined);
+const FeatureAlertContext = createContext<FeatureAlerValue | undefined>(undefined);
 const MAX_TOASTS = 5; // maximum stacked alerts
 const DISPLAY_MS = 3000; // visible time before exit
 const ANIM_MS = 300; // animation duration
 
-export function FeattureAlrtProvider({ children }: { children: ReactNode }) {
+export function FeatureAlertProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   // store timeouts per toast id
   const timeouts = useRef<Map<string, { exit?: number; remove?: number }>>(new Map());
@@ -78,19 +78,19 @@ export function FeattureAlrtProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <FeatureAlrtContext.Provider value={{ showBanner }}>
+    <FeatureAlertContext.Provider value={{ showBanner }}>
       {children}
       <div className="fixed bottom-[5%] right-[5%] flex flex-col-reverse gap-3 pointer-events-none">
         {toasts.map((t) => (
           <Toast key={t.id} icon={t.icon} message={t.message} type={t.type} isExiting={t.isExiting} />
         ))}
       </div>
-    </FeatureAlrtContext.Provider>
+    </FeatureAlertContext.Provider>
   );
 }
 
 export function useFeatureAlert() {
-  const context = useContext(FeatureAlrtContext);
+  const context = useContext(FeatureAlertContext);
   if (!context) throw new Error("useFeatureAlert must be used within FeatureAlrtProvider");
   return context;
 }
