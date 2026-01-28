@@ -1,10 +1,9 @@
 'use client'
 
 import { useState } from "react"
-import { Eye, EyeOff, Mail, Lock, Loader2 } from "lucide-react"
-import { useForm, Controller } from "react-hook-form"
+import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-
 import { loginSchema } from "../schemas/login.schema"
 import { useLogin } from "../hooks/useLogin"
 import { LoginPayload, formDefaultValues } from "../types"
@@ -14,10 +13,10 @@ export function LoginForm() {
   const { submit } = useLogin()
 
   const {
-    control,
+    register,
     handleSubmit,
     setError,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginPayload>({
     defaultValues: formDefaultValues,
     resolver: zodResolver(loginSchema),
@@ -27,48 +26,11 @@ export function LoginForm() {
     try {
       await submit(data)
     } catch {
-      setError("email", { type: "manual", message: "Email or password is invalid" })
+      setError("email", { type: "manual", message: "Invalid email or password" })
     }
   }
 
   return (
-    // <div className="relative h-screen w-full overflow-hidden bg-blend-soft-light">
-    //   {/* Login Form Container */}
-    //   <div className="relative z-10 flex items-center justify-center h-full">
-    //     <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-8 w-[400px] animate-fade-in flex flex-col gap-8">
-    //       <h3 className="text-3xl font-bold text-black text-center tracking-wide flex flex-col gap-3 select-none">
-    //         Welcome
-    //       </h3>
-    //       <form className="flex flex-col gap-8 pb-6" onSubmit={handleSubmit(onSubmit)}>
-    //         <div className="relative group">
-    //           <label htmlFor="email" className="block text-sm text-white font-medium mb-1 select">
-    //             Email
-    //           </label>
-    //           <input type="email" id="email" name="email" placeholder="Enter your email" className="w-full px-4 py-3 rounded-xl outline-none transition-all duration-500 bg-black/20 ring-0 ring-white/10 focus:bg-black/50 focus:ring-1 focus:ring-white/30" />
-    //         </div>
-    //         <div className="relative">
-    //           <label htmlFor="password" className="lock text-sm text-white font-semibold mb-1 transition-all duration-500 ease-in-out select-none">
-    //             Password
-    //           </label>
-    //           <input type={showPassword ? "text" : "password"} id="password" name="password" placeholder="Enter your password"
-    //             className="w-full px-4 py-3 pr-12 rounded-xl focus:outline-none transform transition-all duration-500 bg-black/20 ring-0 ring-white/10 focus:bg-black/50 focus:ring-1 focus:ring-white/30" />
-    //           <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-[5%] top-[55%] text-white/70 hover:text-white transition-all duration-500" aria-label=" Toggle password visibility">
-    //             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-    //           </button>
-    //         </div>
-    //         <button type="submit" className={`relative w-full py-2 rounded-lg shadow-sm bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold hover:shadow-lg transition duration-500 ease-in-out bg-blend-soft-light`}>
-    //           Sign in
-    //         </button>
-    //       </form>
-    //       {/* continue with goolge/facebook */}
-    //       <span className=" flex flex-row gap-3 justify-center text-sm text-white/70 select-none">
-    //         Continue with
-    //         <a className="font-bold italic underline cursor-pointer">Google</a>/<a className="font-bold italic underline cursor-pointer">Facebook</a>
-    //       </span>
-    //     </div>
-    //   </div >
-    // </div>
-
     <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-black">
       {/* Decorative background elements */}
       <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-violet-600/30 blur-[120px] mix-blend-screen animate-pulse" />
@@ -94,22 +56,23 @@ export function LoginForm() {
               <label htmlFor="email" className="text-sm font-medium text-white/80 ml-1">
                 Email Address
               </label>
-              <Controller
-                name="email"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => <div className="relative group transition-all duration-500 ease-in-out">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/40 group-focus-within:text-violet-400 transition-colors">
-                    <Mail size={18} />
-                  </span>
-                  <input {...field} placeholder='email'
-                    className="input-field-md-primary w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all duration-300 hover:bg-white/10"
-                    data-error={errors.email ? "true" : "false"}
-                    data-success={field.value && !errors.email ? "true" : "false"} />
-                  <div className={`error-container ${errors.email ? ' h-10 p-3 opacity-100 mt-3' : 'h-0 p-0 opacity-0 mt-0'}`}>
-                    <span className={`error-text ${errors.email ? ' opacity-100' : 'opacity-0 '} `}>{errors.email?.message}</span>
-                  </div>
-                </div>} />
+              <div className="relative group transition-all duration-300">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/40 group-focus-within:text-violet-400 transition-colors">
+                  <Mail size={18} />
+                </div>
+                <input
+                  {...register("email")}
+                  type="email"
+                  id="email"
+                  placeholder="name@company.com"
+                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all duration-300 hover:bg-white/10"
+                />
+              </div>
+              {errors.email && (
+                <p className="text-red-400 text-xs ml-1 animate-slide-up">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             {/* Password Field */}
@@ -117,22 +80,31 @@ export function LoginForm() {
               <label htmlFor="password" className="text-sm font-medium text-white/80 ml-1">
                 Password
               </label>
-              <Controller
-                name="password"
-                control={control}
-                rules={{ required: true }}
-                render={({ field }) => <div className="relative group transition-all duration-500 ease-in-out">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/40 group-focus-within:text-violet-400 transition-colors">
-                    <Lock size={18} />
-                  </span>
-                  <input {...field} type={showPassword ? "text" : "password"} id="password" name="password" placeholder="Enter your password"
-                    className="input-field-md-primary w-full pl-10 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all duration-300 hover:bg-white/10"
-                    data-error={errors.password ? "true" : "false"}
-                    data-success={field.value && !errors.password ? "true" : "false"} />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute transform translate-x-[-50%] translate-y-[-50%] right-[5%] top-[50%] text-white/70 hover:text-white transition-all duration-500" aria-label=" Toggle password visibility">
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>} />
+              <div className="relative group transition-all duration-300">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/40 group-focus-within:text-violet-400 transition-colors">
+                  <Lock size={18} />
+                </div>
+                <input
+                  {...register("password")}
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  placeholder="Enter your password"
+                  className="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all duration-300 hover:bg-white/10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-white/40 hover:text-white transition-colors cursor-pointer"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-red-400 text-xs ml-1 animate-slide-up">
+                  {errors.password.message}
+                </p>
+              )}
               <div className="flex justify-end">
                 <a href="#" className="text-xs text-violet-300 hover:text-white transition-colors">
                   Forgot password?
@@ -143,10 +115,10 @@ export function LoginForm() {
             {/* Submit Button */}
             <button
               type="submit"
-              // disabled={isSubmitting}
+              disabled={isSubmitting}
               className="w-full py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
             >
-              {true ? (
+              {isSubmitting ? (
                 <>
                   <Loader2 size={20} className="animate-spin" />
                   <span>Signing in...</span>

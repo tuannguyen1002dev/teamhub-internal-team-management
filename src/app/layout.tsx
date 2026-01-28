@@ -5,7 +5,7 @@ import { DialogProvider } from "@/contexts/DialogProvider";
 import { AuthProvider } from "@/contexts/AuthProvider";
 import BGAnimation from "@/components/basics/bgAnimation";
 import { ToastProvider } from "@/contexts/AlertToastContext";
-import { FeatureAlertProvider } from "@/contexts/featuresAlert";
+import { FeatureAlertProvider } from "@/contexts/FeaturesAlertProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -83,7 +83,7 @@ body {
   }
 
   .input-field-md-primary {
-    @apply w-full px-3 py-2 h-10 rounded-md outline-none transition-all ease-in-out duration-500 bg-black/20 ring-0 ring-black/10 focus:bg-black/40 focus:ring-1 focus:ring-white/30;
+    @apply w-full p-3 h-10 rounded-md outline-none transition-all ease-in-out duration-500 bg-black/20 ring-0 ring-black/10 focus:bg-black/40 focus:ring-1 focus:ring-white/30;
   }
 
   .input-field-md-primary[data-error="true"] {
