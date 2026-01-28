@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email already registered" }, { status: 401 });
     }
 
-    await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: any) => {
       const newAccount = await tx.account.create({
         data: {
           email,
