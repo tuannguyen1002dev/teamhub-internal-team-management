@@ -1,5 +1,5 @@
 import type { PublicFeatureManifest } from '@/shared/types/FeatureManifest'
-import { LoginForm } from "@/features/auth/login/index"
+import { LoginForm } from "./ui/LoginForm"
 
 export const loginManifest: PublicFeatureManifest = {
   id: "login",
